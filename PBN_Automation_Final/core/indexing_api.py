@@ -16,13 +16,19 @@ def submit_to_google_indexing(url, type="URL_UPDATED"):
     types: 'URL_UPDATED' or 'URL_DELETED'
     """
     try:
-        if not os.path.exists(CREDENTIALS_FILE):
-             print(f"⚠️ Indexing API: Credentials file not found at {CREDENTIALS_FILE}")
-             return False
+        json_creds = os.getenv("GOOGLE_CREDENTIALS")
+        if json_creds:
+            if os.path.exists(json_creds):
+                credentials = service_account.Credentials.from_service_account_file(json_creds, scopes=INDEXING_SCOPE)
+            else:
+                creds_dict = json.loads(json_creds)
+                credentials = service_account.Credentials.from_service_account_info(creds_dict, scopes=INDEXING_SCOPE)
+        else:
+            if not os.path.exists(CREDENTIALS_FILE):
+                 print(f"⚠️ Indexing API: Credentials file not found at {CREDENTIALS_FILE} and GOOGLE_CREDENTIALS not set.")
+                 return False
+            credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=INDEXING_SCOPE)
 
-        credentials = service_account.Credentials.from_service_account_file(
-            CREDENTIALS_FILE, scopes=INDEXING_SCOPE
-        )
         
         # Refresh token
         credentials.refresh(Request())
