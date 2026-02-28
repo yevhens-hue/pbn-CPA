@@ -1,0 +1,256 @@
+/* =========================================
+   AVIATOR CASINO PRO THEME - NEXT.JS EDITION
+   ========================================= */
+
+/* --- 1. Base Variables & Reset --- */
+:root {
+    /* Next.js inspired color palette */
+    --bg-black: #000000;
+    --bg-dark: #0a0a0a;
+    --bg-surface: #111111;
+    --primary-red: #ff0040;
+    --accent-red-glow: rgba(255, 0, 64, 0.4);
+    --text-main: #ededed;
+    --text-muted: #a1a1a1;
+    --text-dim: #666666;
+
+    /* Next.js inspired borders and radius */
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.2);
+    --radius-full: 9999px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+
+    /* Shadows and Glows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px var(--accent-red-glow);
+}
+
+body,
+.site-content,
+.inside-article,
+.sidebar,
+.widget-area {
+    background-color: var(--bg-black) !important;
+    color: var(--text-main) !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.02em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.05em;
+    margin-bottom: 0.5em;
+}
+
+h1 {
+    font-size: 3.5rem !important;
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 2rem !important;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 10px;
+    margin-top: 2em;
+}
+
+a {
+    color: #ffffff !important;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: var(--primary-red) !important;
+    text-decoration-color: var(--primary-red);
+}
+
+/* --- 2. Article Container --- */
+.entry-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.125rem !important;
+    line-height: 1.625 !important;
+    color: var(--text-main);
+}
+
+/* --- 3. Hero Section & Badges --- */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-red);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* --- 4. Modern CTA (Next.js Style) --- */
+.cta-main,
+.modern-cta {
+    display: inline-block;
+    padding: 12px 32px;
+    background: #ffffff;
+    color: #000000 !important;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none !important;
+    border-radius: var(--radius-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.cta-main:hover,
+.modern-cta:hover {
+    background: #000000;
+    color: #ffffff !important;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.cta-secondary {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.cta-secondary:hover {
+    background: var(--bg-surface);
+    border-color: var(--border-hover);
+}
+
+/* --- 5. Next-style Cards (Glassmorphism) --- */
+.strategy-card,
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin: 40px 0;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.strategy-card:hover,
+.glass-card:hover {
+    border-color: var(--border-hover);
+    transform: scale(1.01);
+}
+
+/* --- 6. Pros & Cons (Modern Minimal) --- */
+.grid-pc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin: 40px 0;
+}
+
+@media (max-width: 640px) {
+    .grid-pc {
+        grid-template-columns: 1fr;
+    }
+}
+
+.grid-pc .p,
+.grid-pc .c {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    padding: 24px;
+    border-radius: var(--radius-lg);
+}
+
+.grid-pc h4 {
+    margin-top: 0;
+    font-size: 1.25rem;
+}
+
+.grid-pc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.grid-pc li {
+    margin-bottom: 12px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* --- 7. Modern Tables --- */
+.dynamic-data-table {
+    border: 1px solid var(--border-subtle) !important;
+    background: var(--bg-surface) !important;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.dynamic-data-table th {
+    background: #111 !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    color: var(--text-muted) !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.dynamic-data-table td {
+    border-bottom: 1px solid var(--border-subtle) !important;
+    color: #fff !important;
+}
+
+/* --- 8. Navigation & Header --- */
+.main-navigation {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.main-navigation a {
+    text-decoration: none;
+    color: var(--text-muted) !important;
+    font-weight: 500;
+}
+
+.main-navigation a:hover {
+    color: #fff !important;
+}
+
+/* --- 9. Animations --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.entry-header,
+.entry-content>*:first-child {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
