@@ -1,0 +1,6 @@
+requests
+python-dotenv
+google-genai
+gspread
+oauth2client
+python-whois
