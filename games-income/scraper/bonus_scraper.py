@@ -232,37 +232,30 @@ def scrape_site(site: dict, geo: str, bonus_type: str) -> list:
 
 def get_fallback_bonuses(site: dict, geo: str, bonus_type: str) -> list:
     """Returns hardcoded fallback bonuses when scraping fails."""
+    # Use site-specific or geo-specific defaults
+    curr = "₹" if geo == "IN" else "₺" if geo == "TR" else "R$" if geo == "BR" else "$"
+    
     FALLBACKS = {
         "1win": {
             "bonus_title": "Welcome Package",
-            "bonus_amount": "500% up to ₹75,000",
-            "bonus_type": "welcome",
-            "wagering": "35x",
-            "conditions": "Min deposit ₹300. Wager 35x before withdrawal."
+            "bonus_amount": f"500% up to {curr}75,000" if geo == "IN" else f"500% up to {curr}25,000",
+            "bonus_type": "welcome"
         },
         "1xbet": {
             "bonus_title": "First Deposit Bonus",
-            "bonus_amount": "100% up to ₹10,000",
-            "bonus_type": "welcome",
-            "wagering": "5x",
-            "conditions": "Min deposit ₹100. Valid for 30 days."
-        },
-        "parimatch": {
-            "bonus_title": "Welcome Bonus",
-            "bonus_amount": "150% up to ₹20,000",
-            "bonus_type": "welcome",
-            "wagering": "30x",
-            "conditions": "Min deposit ₹300."
+            "bonus_amount": f"100% up to {curr}10,000" if geo == "IN" else f"100% up to {curr}3,500",
+            "bonus_type": "welcome"
         },
         "default": {
             "bonus_title": "Welcome Bonus",
-            "bonus_amount": "100% up to ₹10,000",
+            "bonus_amount": f"100% up to {curr}10,000",
             "bonus_type": "welcome",
             "wagering": "30x",
             "conditions": "Refer to website for full terms."
         }
     }
-    data = FALLBACKS.get(site["brand_id"], FALLBACKS["default"])
+    
+    brand_data = FALLBACKS.get(site["brand_id"], FALLBACKS["default"])
     return [{
         "geo": geo,
         "type": bonus_type,

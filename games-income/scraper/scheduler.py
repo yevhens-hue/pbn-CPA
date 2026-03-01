@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 # All GEOs to scrape
-ALL_GEOS = ["IN", "UA", "BR"]
+ALL_GEOS = ["IN", "TR", "BR"]
 INTERVAL_HOURS = 6
 
 

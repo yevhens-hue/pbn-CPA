@@ -72,36 +72,36 @@
             }
         ]
     },
-    "UA": {
-        "name": "Ukraine",
-        "currency": "UAH",
-        "language": "uk",
+    "TR": {
+        "name": "Turkey",
+        "currency": "TRY",
+        "language": "tr",
         "casino": [
             {
                 "name": "1Win",
                 "brand_id": "1win",
-                "bonus_url": "https://1win.ua/promo",
-                "affiliate_url": "https://1win.ua/?ref=YOUR_REF",
-                "logo": "https://1win.ua/favicon.ico",
-                "rating": 4.6
+                "bonus_url": "https://1win.com/tr/promo",
+                "affiliate_url": "https://1win.com/?ref=YOUR_REF",
+                "logo": "https://1win.com/favicon.ico",
+                "rating": 4.7
             },
             {
-                "name": "Parimatch",
-                "brand_id": "parimatch",
-                "bonus_url": "https://parimatch.ua/uk/promotions",
-                "affiliate_url": "https://parimatch.ua/?ref=YOUR_REF",
-                "logo": "https://parimatch.ua/favicon.ico",
-                "rating": 4.5
+                "name": "Bets10",
+                "brand_id": "bets10",
+                "bonus_url": "https://www.bets10.com/en/promotions",
+                "affiliate_url": "https://www.bets10.com/?ref=YOUR_REF",
+                "logo": "https://www.bets10.com/favicon.ico",
+                "rating": 4.8
             }
         ],
         "betting": [
             {
-                "name": "Parimatch Sports",
-                "brand_id": "parimatch_sports",
-                "bonus_url": "https://parimatch.ua/uk/promotions",
-                "affiliate_url": "https://parimatch.ua/?ref=YOUR_REF",
-                "logo": "https://parimatch.ua/favicon.ico",
-                "rating": 4.7
+                "name": "Mobilbahis",
+                "brand_id": "mobilbahis",
+                "bonus_url": "https://www.mobilbahis.com/en/promotions",
+                "affiliate_url": "https://www.mobilbahis.com/?ref=YOUR_REF",
+                "logo": "https://www.mobilbahis.com/favicon.ico",
+                "rating": 4.6
             }
         ]
     },
