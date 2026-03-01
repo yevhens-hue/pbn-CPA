@@ -5,7 +5,11 @@ import gspread
 import datetime
 import time
 from oauth2client.service_account import ServiceAccountCredentials
-from indexing_api import submit_to_google_indexing
+try:
+    from core.indexing_api import submit_to_google_indexing
+except ImportError:
+    from indexing_api import submit_to_google_indexing
+
 from dotenv import load_dotenv
 
 # Load environment variables
