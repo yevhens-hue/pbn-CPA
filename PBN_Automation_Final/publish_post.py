@@ -1094,7 +1094,9 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
     
     # Raw HTTP Request to bypass library issues
     # gemini-2.0-flash returned 429, meaning it exists!
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={os.getenv('GEMINI_API_KEY')}"
+    gemini_key = os.getenv('GEMINI_API_KEY', '').strip()
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
+
     headers = {'Content-Type': 'application/json'}
     payload = {
         "contents": [{
@@ -1194,7 +1196,7 @@ def generate_with_groq(prompt, topic, use_ai_images=False):
     Fast, free, and generous rate limits (30 req/min).
     Set GROQ_API_KEY in your .env to enable.
     """
-    groq_key = os.getenv('GROQ_API_KEY')
+    groq_key = os.getenv('GROQ_API_KEY', '').strip()
     if not groq_key:
         print("   ⚠️ GROQ_API_KEY not set. Skipping Groq fallback.")
         return None, None, None
