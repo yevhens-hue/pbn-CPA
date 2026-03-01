@@ -16,6 +16,8 @@ import argparse
 import sqlite3
 import datetime
 import requests
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 from typing import Optional, List
 from pathlib import Path
 from dotenv import load_dotenv
@@ -269,6 +271,76 @@ def get_fallback_bonuses(site: dict, geo: str, bonus_type: str) -> list:
     }]
 
 
+# ─── Google Sheets Export ─────────────────────────────────────────────────────
+
+def export_to_sheets(geo: str = None, bonus_type: str = None):
+    """
+    Export active bonuses from the local DB to the Google Sheet.
+    Unified storage: https://docs.google.com/spreadsheets/d/1yQJKYRpdc8I-xRlLYrEgz8hhN1bQYM4NuG7NOUbyqAc/
+    """
+    json_creds = os.getenv("GOOGLE_CREDENTIALS")
+    if not json_creds:
+        print("  ⚠️  GOOGLE_CREDENTIALS not set. Skipping Sheets export.")
+        return
+
+    sheet_id = "1yQJKYRpdc8I-xRlLYrEgz8hhN1bQYM4NuG7NOUbyqAc"
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    
+    try:
+        # Auth with gspread
+        if os.path.exists(json_creds):
+            creds = ServiceAccountCredentials.from_json_keyfile_name(json_creds, scope)
+        else:
+            creds_auth = json.loads(json_creds)
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_auth, scope)
+        
+        client = gspread.authorize(creds)
+        spreadsheet = client.open_by_key(sheet_id)
+        
+        # We'll use a tab named after the GEO or just 'All'
+        tab_name = geo.upper() if geo else "All Bonuses"
+        try:
+            worksheet = spreadsheet.worksheet(tab_name)
+        except gspread.exceptions.WorksheetNotFound:
+            # Create if it doesn't exist
+            worksheet = spreadsheet.add_worksheet(title=tab_name, rows=1000, cols=12)
+        
+        # Get data from DB
+        bonuses = get_bonuses(geo, bonus_type)
+        
+        # Prepare headers
+        headers = [
+            "ID", "GEO", "Type", "Brand", "Bonus Title", 
+            "Amount", "Wagering", "Conditions", "Affiliate URL", 
+            "Rating", "Scraped At"
+        ]
+        
+        # Prepare rows
+        rows = [headers]
+        for b in bonuses:
+            rows.append([
+                b.get("id"),
+                b.get("geo"),
+                b.get("type"),
+                b.get("brand_name"),
+                b.get("bonus_title"),
+                b.get("bonus_amount"),
+                b.get("wagering"),
+                b.get("conditions")[:100], # Keep it brief
+                b.get("affiliate_url"),
+                b.get("rating"),
+                b.get("scraped_at")
+            ])
+            
+        # Clear and update the sheet
+        worksheet.clear()
+        worksheet.update("A1", rows)
+        print(f"✅ Exported {len(bonuses)} bonuses to Google Sheet (Tab: {tab_name}).")
+        
+    except Exception as e:
+        print(f"  ❌ Google Sheets export failed: {e}")
+
+
 # ─── Main Runner ──────────────────────────────────────────────────────────────
 
 def run_scraper(geo: str, bonus_type: str = "all", dry_run: bool = False):
@@ -305,6 +377,8 @@ def run_scraper(geo: str, bonus_type: str = "all", dry_run: bool = False):
     else:
         save_bonuses(all_bonuses)
         print("💾 Saved to database.")
+        # Export to Google Sheets for this GEO
+        export_to_sheets(geo, bonus_type)
 
     return all_bonuses
 
