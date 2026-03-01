@@ -144,6 +144,9 @@ def extract_bonuses_with_ai(html: str, brand_name: str, geo: str) -> list:
     if not groq_key:
         print("  ⚠️  GROQ_API_KEY not set. Cannot use AI extraction.")
         return []
+    
+    # Strip whitespace to prevent "Invalid header value" errors from malformed secrets
+    groq_key = groq_key.strip()
 
     # Trim HTML to avoid token limits — take first 8000 chars
     html_snippet = html[:8000]
