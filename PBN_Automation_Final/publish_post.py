@@ -1415,8 +1415,8 @@ if __name__ == "__main__":
     elif "--telugu" in sys.argv: lang = 'te'
     elif "--marathi" in sys.argv: lang = 'mr'
     
-    # --limit N: how many articles to publish per run (default: 1)
-    max_per_run = 1
+    # --limit N: how many articles to publish per run (default: 2)
+    max_per_run = 2
     if "--limit" in sys.argv:
         try:
             idx = sys.argv.index("--limit")
