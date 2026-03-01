@@ -1,0 +1,124 @@
+{
+    "IN": {
+        "name": "India",
+        "currency": "INR",
+        "language": "en",
+        "casino": [
+            {
+                "name": "1Win",
+                "brand_id": "1win",
+                "bonus_url": "https://1win.com/en/promo",
+                "affiliate_url": "https://1win.com/?ref=YOUR_REF",
+                "logo": "https://1win.com/favicon.ico",
+                "rating": 4.7
+            },
+            {
+                "name": "1xBet",
+                "brand_id": "1xbet",
+                "bonus_url": "https://1xbet.com/en/allgamesentrance/promotions",
+                "affiliate_url": "https://refpa14435.com/L?tag=d_5300195m_1236c_&site=5300195&ad=1236",
+                "logo": "https://1xbet.com/images/logo.png",
+                "rating": 4.5
+            },
+            {
+                "name": "Parimatch",
+                "brand_id": "parimatch",
+                "bonus_url": "https://parimatch.in/en/promotions",
+                "affiliate_url": "https://parimatch.in/?ref=YOUR_REF",
+                "logo": "https://parimatch.in/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "Betway",
+                "brand_id": "betway",
+                "bonus_url": "https://betway.in/promotions",
+                "affiliate_url": "https://betway.in/?ref=YOUR_REF",
+                "logo": "https://betway.in/favicon.ico",
+                "rating": 4.3
+            },
+            {
+                "name": "Melbet",
+                "brand_id": "melbet",
+                "bonus_url": "https://melbet.in/en/bonuses",
+                "affiliate_url": "https://melbet.in/?ref=YOUR_REF",
+                "logo": "https://melbet.in/favicon.ico",
+                "rating": 4.2
+            }
+        ],
+        "betting": [
+            {
+                "name": "1xBet Sports",
+                "brand_id": "1xbet_sports",
+                "bonus_url": "https://1xbet.com/en/allgamesentrance/promotions",
+                "affiliate_url": "https://refpa14435.com/L?tag=d_5300195m_1236c_&site=5300195&ad=1236",
+                "logo": "https://1xbet.com/images/logo.png",
+                "rating": 4.6
+            },
+            {
+                "name": "Dafabet",
+                "brand_id": "dafabet",
+                "bonus_url": "https://www.dafabet.com/en/promotions",
+                "affiliate_url": "https://www.dafabet.com/?ref=YOUR_REF",
+                "logo": "https://www.dafabet.com/favicon.ico",
+                "rating": 4.3
+            },
+            {
+                "name": "10CRIC",
+                "brand_id": "10cric",
+                "bonus_url": "https://www.10cric.com/promotions",
+                "affiliate_url": "https://www.10cric.com/?ref=YOUR_REF",
+                "logo": "https://www.10cric.com/favicon.ico",
+                "rating": 4.5
+            }
+        ]
+    },
+    "UA": {
+        "name": "Ukraine",
+        "currency": "UAH",
+        "language": "uk",
+        "casino": [
+            {
+                "name": "1Win",
+                "brand_id": "1win",
+                "bonus_url": "https://1win.ua/promo",
+                "affiliate_url": "https://1win.ua/?ref=YOUR_REF",
+                "logo": "https://1win.ua/favicon.ico",
+                "rating": 4.6
+            },
+            {
+                "name": "Parimatch",
+                "brand_id": "parimatch",
+                "bonus_url": "https://parimatch.ua/uk/promotions",
+                "affiliate_url": "https://parimatch.ua/?ref=YOUR_REF",
+                "logo": "https://parimatch.ua/favicon.ico",
+                "rating": 4.5
+            }
+        ],
+        "betting": [
+            {
+                "name": "Parimatch Sports",
+                "brand_id": "parimatch_sports",
+                "bonus_url": "https://parimatch.ua/uk/promotions",
+                "affiliate_url": "https://parimatch.ua/?ref=YOUR_REF",
+                "logo": "https://parimatch.ua/favicon.ico",
+                "rating": 4.7
+            }
+        ]
+    },
+    "BR": {
+        "name": "Brazil",
+        "currency": "BRL",
+        "language": "pt",
+        "casino": [
+            {
+                "name": "1Win",
+                "brand_id": "1win",
+                "bonus_url": "https://1win.com/pt/promo",
+                "affiliate_url": "https://1win.com/?ref=YOUR_REF",
+                "logo": "https://1win.com/favicon.ico",
+                "rating": 4.5
+            }
+        ],
+        "betting": []
+    }
+}

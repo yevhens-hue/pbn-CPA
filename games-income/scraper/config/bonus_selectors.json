@@ -1,0 +1,23 @@
+{
+    "1win": {
+        "method": "ai",
+        "bonus_container": ".promo-card, .bonus-item, [class*='bonus'], [class*='promo']",
+        "title_selector": "h2, h3, .promo-title",
+        "amount_selector": ".promo-amount, .bonus-value, strong",
+        "description_selector": "p, .promo-desc"
+    },
+    "1xbet": {
+        "method": "ai",
+        "bonus_container": ".promo-item, .bonus-card",
+        "title_selector": ".promo-title, h3",
+        "amount_selector": ".promo-value",
+        "description_selector": ".promo-description"
+    },
+    "default": {
+        "method": "ai",
+        "bonus_container": "[class*='bonus'], [class*='promo'], [class*='offer'], [class*='promotion']",
+        "title_selector": "h1, h2, h3, .title, [class*='title']",
+        "amount_selector": "strong, b, [class*='amount'], [class*='value'], [class*='percent']",
+        "description_selector": "p, [class*='desc'], [class*='text']"
+    }
+}
