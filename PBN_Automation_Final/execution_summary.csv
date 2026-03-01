@@ -1,6 +1,6 @@
 Metric,Value,Description
-Total Sites,1,Total sites in batch
-Successful Posts,1,Published without error
+Total Sites,0,Total sites in batch
+Successful Posts,0,Published without error
 Errors,0,"Issues (timeouts, auth)"
 Old Posts Updated,0,Links injected into existing content
-New Posts Created,1,New pages created from scratch
+New Posts Created,0,New pages created from scratch
