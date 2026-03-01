@@ -5,7 +5,7 @@ Scrapes bonus information from top casino/betting sites by GEO location.
 
 Usage:
     python bonus_scraper.py --geo IN --type casino
-    python bonus_scraper.py --geo UA --type betting
+    python bonus_scraper.py --geo TR --type betting
     python bonus_scraper.py --geo IN --type all --dry-run
 """
 

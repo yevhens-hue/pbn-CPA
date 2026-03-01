@@ -14,7 +14,7 @@ games-income/
     ├── bonuses.db           ← SQLite база данных (создается автоматически)
     ├── output/              ← JSON-экспорты (создается автоматически)
     └── config/
-        ├── sites_by_geo.json    ← Список сайтов по ГЕО (IN, UA, BR)
+        ├── sites_by_geo.json *   **GEO Support**: India (IN), Turkey (TR), Brazil (BR).
         └── bonus_selectors.json ← CSS-селекторы для каждого бренда
 ```
 
