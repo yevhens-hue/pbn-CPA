@@ -11,7 +11,16 @@ export const metadata: Metadata = {
     icons: { icon: '/favicon.ico' },
 };
 
+import bonusesData from '../data/bonuses.json';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+    const lastUpdate = new Date(bonusesData.updated_at).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
     return (
         <html lang="en">
             <body className={`${inter.className} bg-[#0a0d1a] text-white`}>
@@ -32,11 +41,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 🏏 Betting Bonuses
                             </Link>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <span className="hidden sm:flex items-center gap-1.5 text-xs text-green-400 bg-green-900/30 border border-green-500/20 px-3 py-1.5 rounded-full">
+                        <div className="flex flex-col items-end gap-1">
+                            <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider text-green-400">
                                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                                Live Updates
+                                Updated {lastUpdate}
                             </span>
+                            <span className="text-[9px] text-gray-500 font-medium">Automatic 12h Cycle</span>
                         </div>
                     </div>
                 </nav>
