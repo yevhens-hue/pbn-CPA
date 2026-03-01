@@ -42,26 +42,41 @@ def run_for_geo(geo: str, export: bool = False):
     print(f"✅ GEO {geo} complete.")
 
 
-def run_all(export: bool = False):
+def run_all(export: bool = False, github_action: bool = False):
     """Run scraper for all GEOs sequentially."""
     from pathlib import Path
     Path("output").mkdir(exist_ok=True)
 
+    all_collected = []
+    
     for geo in ALL_GEOS:
         run_for_geo(geo, export=export)
-        time.sleep(5)  # Brief pause between GEOs
+        time.sleep(2)  # Brief pause between GEOs
+        
+    if github_action:
+        print("\n🚀 GitHub Action Mode: Consolidating data...")
+        # Import bonus_scraper here to avoid circular imports if any
+        from bonus_scraper import get_bonuses, export_json_api
+        
+        # Consolidated export for the frontend
+        frontend_data_path = Path(__file__).parent.parent / "frontend" / "data" / "bonuses.json"
+        export_json_api(output_file=str(frontend_data_path))
+        print(f"✨ Consolidated data exported to {frontend_data_path}")
 
     print(f"\n🎉 All GEOs scraped successfully!")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Bonus Scraper Scheduler")
-    parser.add_argument("--loop",   action="store_true", help=f"Loop every {INTERVAL_HOURS}h")
+    parser.add_argument("--loop",   action="store_true", help=f"Loop every {INTERVAL_HOURS} hours")
     parser.add_argument("--export", action="store_true", help="Export JSON after each run")
+    parser.add_argument("--github-action", action="store_true", help="Run full cycle for GitHub Actions")
     parser.add_argument("--geo",    default=None, help="Single GEO to run (default: all)")
     args = parser.parse_args()
 
-    if args.loop:
+    if args.github_action:
+        run_all(export=False, github_action=True)
+    elif args.loop:
         print(f"⏰ Scheduler started. Running every {INTERVAL_HOURS} hours.")
         while True:
             if args.geo:
