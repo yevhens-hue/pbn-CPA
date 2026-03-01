@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-01T23:36:01.673570Z",
+  "updated_at": "2026-03-01T23:49:40.083659Z",
   "geo": "all",
   "type": "all",
   "count": 12,
@@ -19,7 +19,7 @@
       "logo_url": "https://1win.com/favicon.ico",
       "rating": 4.7,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429654",
+      "scraped_at": "2026-03-01T23:49:27.935023",
       "expires_at": null
     },
     {
@@ -37,7 +37,7 @@
       "logo_url": "https://parimatch.ua/favicon.ico",
       "rating": 4.7,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:56.116169",
+      "scraped_at": "2026-03-01T23:49:33.582608",
       "expires_at": null
     },
     {
@@ -55,7 +55,7 @@
       "logo_url": "https://1xbet.com/images/logo.png",
       "rating": 4.6,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429816",
+      "scraped_at": "2026-03-01T23:49:27.935256",
       "expires_at": null
     },
     {
@@ -73,7 +73,7 @@
       "logo_url": "https://1win.ua/favicon.ico",
       "rating": 4.6,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:56.115942",
+      "scraped_at": "2026-03-01T23:49:33.582465",
       "expires_at": null
     },
     {
@@ -91,7 +91,7 @@
       "logo_url": "https://1xbet.com/images/logo.png",
       "rating": 4.5,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429784",
+      "scraped_at": "2026-03-01T23:49:27.935216",
       "expires_at": null
     },
     {
@@ -109,7 +109,7 @@
       "logo_url": "https://www.10cric.com/favicon.ico",
       "rating": 4.5,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429828",
+      "scraped_at": "2026-03-01T23:49:27.935271",
       "expires_at": null
     },
     {
@@ -127,7 +127,7 @@
       "logo_url": "https://parimatch.ua/favicon.ico",
       "rating": 4.5,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:56.116150",
+      "scraped_at": "2026-03-01T23:49:33.582597",
       "expires_at": null
     },
     {
@@ -145,7 +145,7 @@
       "logo_url": "https://1win.com/favicon.ico",
       "rating": 4.5,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:59.568612",
+      "scraped_at": "2026-03-01T23:49:37.979661",
       "expires_at": null
     },
     {
@@ -163,7 +163,7 @@
       "logo_url": "https://parimatch.in/favicon.ico",
       "rating": 4.4,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429796",
+      "scraped_at": "2026-03-01T23:49:27.935232",
       "expires_at": null
     },
     {
@@ -181,7 +181,7 @@
       "logo_url": "https://betway.in/favicon.ico",
       "rating": 4.3,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429804",
+      "scraped_at": "2026-03-01T23:49:27.935241",
       "expires_at": null
     },
     {
@@ -199,7 +199,7 @@
       "logo_url": "https://www.dafabet.com/favicon.ico",
       "rating": 4.3,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429822",
+      "scraped_at": "2026-03-01T23:49:27.935264",
       "expires_at": null
     },
     {
@@ -217,7 +217,7 @@
       "logo_url": "https://melbet.in/favicon.ico",
       "rating": 4.2,
       "is_active": 1,
-      "scraped_at": "2026-03-01T23:35:50.429810",
+      "scraped_at": "2026-03-01T23:49:27.935249",
       "expires_at": null
     }
   ]
