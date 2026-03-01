@@ -1398,6 +1398,22 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
                 submit_to_google_indexing(link)
                 # 🔔 Web Push: Notify OneSignal
                 trigger_onesignal_notification(seo_title if 'seo_title' in dir() else topic, link)
+                # 💬 Auto-Comment: Leave 2 realistic comments with a delay
+                try:
+                    import threading
+                    from core.auto_commenter import comment_on_post
+                    delay_min = random.randint(20, 60)
+                    t = threading.Thread(
+                        target=comment_on_post,
+                        args=(site_url, login, password, link, seo_title if 'seo_title' in dir() else topic, topic),
+                        kwargs={"num_comments": 2, "delay_minutes": delay_min},
+                        daemon=True
+                    )
+                    t.start()
+                    print(f"   💬 Auto-commenter scheduled in {delay_min} min for: {link}")
+                except Exception as e:
+                    print(f"   ⚠️ Auto-commenter failed to start: {e}")
+
         
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)

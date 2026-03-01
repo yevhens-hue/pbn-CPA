@@ -43,6 +43,16 @@ jobs:
           cd PBN_Automation_Final
           python3 agent_manager.py
 
+      - name: Auto-Comment on New Articles
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PYTHONPATH: ${{ github.workspace }}/PBN_Automation_Final
+        run: |
+          cd PBN_Automation_Final/core
+          # Оставляем комментарии на 3 последних статьи без комментариев
+          python3 auto_commenter.py --backfill --count 3 || echo "Auto-commenter skipped"
+
+
       - name: Commit results
         run: |
           git config --local user.email "action@github.com"
