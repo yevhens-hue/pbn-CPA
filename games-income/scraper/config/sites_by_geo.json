@@ -15,9 +15,9 @@
             {
                 "name": "1xBet",
                 "brand_id": "1xbet",
-                "bonus_url": "https://1xbet.com/en/allgamesentrance/promotions",
+                "bonus_url": "https://1xbet.com/en/promotions",
                 "affiliate_url": "https://refpa14435.com/L?tag=d_5300195m_1236c_&site=5300195&ad=1236",
-                "logo": "https://1xbet.com/images/logo.png",
+                "logo": "https://1xbet.com/favicon.ico",
                 "rating": 4.5
             },
             {
@@ -43,24 +43,56 @@
                 "affiliate_url": "https://melbet.in/?ref=YOUR_REF",
                 "logo": "https://melbet.in/favicon.ico",
                 "rating": 4.2
+            },
+            {
+                "name": "22Bet",
+                "brand_id": "22bet",
+                "bonus_url": "https://22bet.com/en/promotions",
+                "affiliate_url": "https://22bet.com/?ref=YOUR_REF",
+                "logo": "https://22bet.com/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "4raBet",
+                "brand_id": "4rabet",
+                "bonus_url": "https://4rabet.com/promotions",
+                "affiliate_url": "https://4rabet.com/?ref=YOUR_REF",
+                "logo": "https://4rabet.com/favicon.ico",
+                "rating": 4.1
+            },
+            {
+                "name": "Mostbet",
+                "brand_id": "mostbet",
+                "bonus_url": "https://mostbet.com/promo",
+                "affiliate_url": "https://mostbet.com/?ref=YOUR_REF",
+                "logo": "https://mostbet.com/favicon.ico",
+                "rating": 4.0
+            },
+            {
+                "name": "Rajabets",
+                "brand_id": "rajabets",
+                "bonus_url": "https://rajabets.com/promotions",
+                "affiliate_url": "https://rajabets.com/?ref=YOUR_REF",
+                "logo": "https://rajabets.com/favicon.ico",
+                "rating": 4.3
+            },
+            {
+                "name": "Leon",
+                "brand_id": "leon",
+                "bonus_url": "https://leon.bet/en/promotions",
+                "affiliate_url": "https://leon.bet/?ref=YOUR_REF",
+                "logo": "https://leon.bet/favicon.ico",
+                "rating": 4.4
             }
         ],
         "betting": [
             {
                 "name": "1xBet Sports",
                 "brand_id": "1xbet_sports",
-                "bonus_url": "https://1xbet.com/en/allgamesentrance/promotions",
+                "bonus_url": "https://1xbet.com/en/promotions",
                 "affiliate_url": "https://refpa14435.com/L?tag=d_5300195m_1236c_&site=5300195&ad=1236",
-                "logo": "https://1xbet.com/images/logo.png",
+                "logo": "https://1xbet.com/favicon.ico",
                 "rating": 4.6
-            },
-            {
-                "name": "Dafabet",
-                "brand_id": "dafabet",
-                "bonus_url": "https://www.dafabet.com/en/promotions",
-                "affiliate_url": "https://www.dafabet.com/?ref=YOUR_REF",
-                "logo": "https://www.dafabet.com/favicon.ico",
-                "rating": 4.3
             },
             {
                 "name": "10CRIC",
@@ -69,6 +101,14 @@
                 "affiliate_url": "https://www.10cric.com/?ref=YOUR_REF",
                 "logo": "https://www.10cric.com/favicon.ico",
                 "rating": 4.5
+            },
+            {
+                "name": "Dafabet",
+                "brand_id": "dafabet",
+                "bonus_url": "https://www.dafabet.com/en/promotions",
+                "affiliate_url": "https://www.dafabet.com/?ref=YOUR_REF",
+                "logo": "https://www.dafabet.com/favicon.ico",
+                "rating": 4.3
             }
         ]
     },
@@ -88,22 +128,77 @@
             {
                 "name": "Bets10",
                 "brand_id": "bets10",
-                "bonus_url": "https://www.bets10.com/en/promotions",
+                "bonus_url": "https://www.bets10.com/tr/promotions",
                 "affiliate_url": "https://www.bets10.com/?ref=YOUR_REF",
                 "logo": "https://www.bets10.com/favicon.ico",
                 "rating": 4.8
-            }
-        ],
-        "betting": [
+            },
             {
                 "name": "Mobilbahis",
                 "brand_id": "mobilbahis",
-                "bonus_url": "https://www.mobilbahis.com/en/promotions",
+                "bonus_url": "https://www.mobilbahis.com/tr/promotions",
                 "affiliate_url": "https://www.mobilbahis.com/?ref=YOUR_REF",
                 "logo": "https://www.mobilbahis.com/favicon.ico",
                 "rating": 4.6
+            },
+            {
+                "name": "Tempobet",
+                "brand_id": "tempobet",
+                "bonus_url": "https://www.tempobet.com/promotions",
+                "affiliate_url": "https://www.tempobet.com/?ref=YOUR_REF",
+                "logo": "https://www.tempobet.com/favicon.ico",
+                "rating": 4.5
+            },
+            {
+                "name": "Betboo",
+                "brand_id": "betboo",
+                "bonus_url": "https://www.betboo.com/promotions",
+                "affiliate_url": "https://www.betboo.com/?ref=YOUR_REF",
+                "logo": "https://www.betboo.com/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "CasinoMaxi",
+                "brand_id": "casinomaxi",
+                "bonus_url": "https://www.casinomaxi.com/tr/promotions",
+                "affiliate_url": "https://www.casinomaxi.com/?ref=YOUR_REF",
+                "logo": "https://www.casinomaxi.com/favicon.ico",
+                "rating": 4.7
+            },
+            {
+                "name": "Casino Metropol",
+                "brand_id": "casinometropol",
+                "bonus_url": "https://www.casinometropol.com/tr/promotions",
+                "affiliate_url": "https://www.casinometropol.com/?ref=YOUR_REF",
+                "logo": "https://www.casinometropol.com/favicon.ico",
+                "rating": 4.6
+            },
+            {
+                "name": "Youwin",
+                "brand_id": "youwin",
+                "bonus_url": "https://www.hepsibahis.com/promotions",
+                "affiliate_url": "https://www.hepsibahis.com/?ref=YOUR_REF",
+                "logo": "https://www.hepsibahis.com/favicon.ico",
+                "rating": 4.5
+            },
+            {
+                "name": "Süperbahis",
+                "brand_id": "superbahis",
+                "bonus_url": "https://www.superbahis.com/promotions",
+                "affiliate_url": "https://www.superbahis.com/?ref=YOUR_REF",
+                "logo": "https://www.superbahis.com/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "Tipobet365",
+                "brand_id": "tipobet365",
+                "bonus_url": "https://www.tipobet365.com/promotions",
+                "affiliate_url": "https://www.tipobet365.com/?ref=YOUR_REF",
+                "logo": "https://www.tipobet365.com/favicon.ico",
+                "rating": 4.3
             }
-        ]
+        ],
+        "betting": []
     },
     "BR": {
         "name": "Brazil",
@@ -117,6 +212,78 @@
                 "affiliate_url": "https://1win.com/?ref=YOUR_REF",
                 "logo": "https://1win.com/favicon.ico",
                 "rating": 4.5
+            },
+            {
+                "name": "Bet365",
+                "brand_id": "bet365",
+                "bonus_url": "https://www.bet365.com/promotions",
+                "affiliate_url": "https://www.bet365.com/?ref=YOUR_REF",
+                "logo": "https://www.bet365.com/favicon.ico",
+                "rating": 4.8
+            },
+            {
+                "name": "Betano",
+                "brand_id": "betano",
+                "bonus_url": "https://br.betano.com/promotions",
+                "affiliate_url": "https://br.betano.com/?ref=YOUR_REF",
+                "logo": "https://br.betano.com/favicon.ico",
+                "rating": 4.7
+            },
+            {
+                "name": "Blaze",
+                "brand_id": "blaze",
+                "bonus_url": "https://blaze.com/pt/promos",
+                "affiliate_url": "https://blaze.com/?ref=YOUR_REF",
+                "logo": "https://blaze.com/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "Estrela Bet",
+                "brand_id": "estrelabet",
+                "bonus_url": "https://estrelabet.com/pt/promotions",
+                "affiliate_url": "https://estrelabet.com/?ref=YOUR_REF",
+                "logo": "https://estrelabet.com/favicon.ico",
+                "rating": 4.5
+            },
+            {
+                "name": "MrJack.Bet",
+                "brand_id": "mrjackbet",
+                "bonus_url": "https://mrjack.bet/promotions",
+                "affiliate_url": "https://mrjack.bet/?ref=YOUR_REF",
+                "logo": "https://mrjack.bet/favicon.ico",
+                "rating": 4.2
+            },
+            {
+                "name": "BetNacional",
+                "brand_id": "betnacional",
+                "bonus_url": "https://betnacional.com/promotions",
+                "affiliate_url": "https://betnacional.com/?ref=YOUR_REF",
+                "logo": "https://betnacional.com/favicon.ico",
+                "rating": 4.3
+            },
+            {
+                "name": "Brabet",
+                "brand_id": "brabet",
+                "bonus_url": "https://www.brabet.com/promotions",
+                "affiliate_url": "https://www.brabet.com/?ref=YOUR_REF",
+                "logo": "https://www.brabet.com/favicon.ico",
+                "rating": 4.1
+            },
+            {
+                "name": "Rivalo",
+                "brand_id": "rivalo",
+                "bonus_url": "https://www.rivalo.com/pt/promotions",
+                "affiliate_url": "https://www.rivalo.com/?ref=YOUR_REF",
+                "logo": "https://www.rivalo.com/favicon.ico",
+                "rating": 4.4
+            },
+            {
+                "name": "LeoVegas",
+                "brand_id": "leovegas",
+                "bonus_url": "https://www.leovegas.com/pt-br/promocoes",
+                "affiliate_url": "https://www.leovegas.com/?ref=YOUR_REF",
+                "logo": "https://www.leovegas.com/favicon.ico",
+                "rating": 4.6
             }
         ],
         "betting": []
