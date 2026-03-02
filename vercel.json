@@ -1,6 +1,0 @@
-{
-    "version": 2,
-    "buildCommand": "cd games-income/frontend && npm install && npm run build",
-    "outputDirectory": "games-income/frontend/.next",
-    "framework": "nextjs"
-}
