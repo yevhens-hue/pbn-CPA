@@ -43,6 +43,15 @@ jobs:
           cd PBN_Automation_Final
           python3 agent_manager.py
 
+      - name: Bulk Index All Published URLs
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          PYTHONPATH: ${{ github.workspace }}/PBN_Automation_Final
+        run: |
+          cd PBN_Automation_Final
+          # Отправить все статьи со статусом Success в Google Indexing API
+          python3 core/bulk_indexer.py || echo "Bulk indexer skipped"
+
       - name: Auto-Comment on New Articles
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
