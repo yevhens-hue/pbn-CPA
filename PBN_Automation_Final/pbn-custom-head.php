@@ -9,6 +9,13 @@
 if (!defined('ABSPATH')) exit;
 
 // ----------------------------------------------------------------
+// FIX: Force HTTPS in robots.txt Sitemap reference (Yoast generates HTTP)
+// ----------------------------------------------------------------
+add_filter('robots_txt', function($output) {
+    return str_replace('http://', 'https://', $output);
+}, 999);
+
+// ----------------------------------------------------------------
 // 0. Affiliate Redirect Handler (/go/1xbet)
 // ----------------------------------------------------------------
 add_action('init', function() {

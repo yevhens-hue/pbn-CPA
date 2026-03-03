@@ -69,3 +69,16 @@ jobs:
           git add PBN_Automation_Final/results.json PBN_Automation_Final/verification_report.json PBN_Automation_Final/execution_summary.csv PBN_Automation_Final/financial_report.csv || echo "No files to add"
           git commit -m "Update publication results [skip ci]" || echo "No changes to commit"
           git push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -d chat_id="${TELEGRAM_CHAT_ID}" \
+              -d text="⚠️ PBN Daily Publish FAILED at $(date -u '+%Y-%m-%d %H:%M UTC')%0ACheck: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              -d parse_mode="HTML"
+          fi

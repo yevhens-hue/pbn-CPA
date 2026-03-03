@@ -512,12 +512,27 @@ def update_sheet_status(row_id, status, link, model):
 
 def build_seo_title(topic, year=2026):
     """
-    Builds an SEO-optimized post title.
-    Format: [Topic]: Ultimate Guide & Winning Strategies [Year]
+    Builds an SEO-optimized post title with varied templates.
+    Randomly selects from 12+ formats to avoid identical title patterns.
     """
     # Remove year if already in topic
     clean_topic = topic.replace(str(year), '').strip().rstrip(':').strip()
-    return f"{clean_topic}: Ultimate Guide & Winning Strategies {year}"
+    
+    templates = [
+        f"{clean_topic}: Complete Expert Guide {year}",
+        f"{clean_topic} — Pro Tips & Insider Secrets ({year})",
+        f"{clean_topic}: What You Need to Know in {year}",
+        f"{clean_topic} | Step-by-Step Strategy Guide {year}",
+        f"The Truth About {clean_topic} ({year} Update)",
+        f"{clean_topic}: Tested Methods & Real Results {year}",
+        f"{clean_topic} — Everything Indian Players Must Know",
+        f"How to Master {clean_topic}: {year} Edition",
+        f"{clean_topic}: Strategies, Tips & Expert Analysis",
+        f"{clean_topic} in {year}: A Deep Dive for Beginners",
+        f"{clean_topic} — Comprehensive Review & Guide {year}",
+        f"Winning at {clean_topic}: Proven Tactics for {year}",
+    ]
+    return random.choice(templates)
 
 
 def build_meta_description(topic, anchor_text, year=2026):
@@ -594,6 +609,42 @@ def extract_tags_from_topic(topic, keyword=''):
         if len(word) > 4 and word not in base_tags:
             base_tags.append(word.strip(',.:'))
     return list(set(base_tags))[:8]  # Max 8 tags
+
+
+def check_duplicate_slug(site_url, username, app_password, title):
+    """
+    Checks if a post with a similar slug already exists on the site.
+    Returns True if a duplicate exists (should skip publishing).
+    """
+    import re as _re
+    # Generate the expected slug from title
+    slug = title.lower()
+    slug = _re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = _re.sub(r'[\s]+', '-', slug).strip('-')
+    # Take first 50 chars of slug for search (WP truncates long slugs)
+    search_term = slug[:50]
+    
+    auth_string = f"{username}:{app_password}"
+    auth_header = base64.b64encode(auth_string.encode()).decode()
+    headers = {'Authorization': f'Basic {auth_header}'}
+    
+    try:
+        endpoint = f"{site_url.rstrip('/')}/wp-json/wp/v2/posts"
+        params = {'search': title[:60], 'per_page': 5, 'status': 'publish'}
+        r = requests.get(endpoint, headers=headers, params=params, timeout=15)
+        if r.status_code == 200:
+            posts = r.json()
+            for post in posts:
+                existing_slug = post.get('slug', '')
+                # Normalize: strip trailing -N suffix
+                base_existing = _re.sub(r'-\d+$', '', existing_slug)
+                base_new = _re.sub(r'-\d+$', '', search_term)
+                if base_existing.startswith(base_new[:40]) or base_new.startswith(base_existing[:40]):
+                    print(f"   ⚠️ Duplicate detected! Existing post: {post.get('link', existing_slug)}")
+                    return True
+    except Exception as e:
+        print(f"   ⚠️ Duplicate check failed: {e}")
+    return False
 
 
 def publish_to_wordpress(site_url, username, app_password, title, content,
@@ -1363,6 +1414,13 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
         seo_title = build_seo_title(topic)
         meta_desc = build_meta_description(topic, anchor)
         print(f"   🏷️ SEO Title: {seo_title}")
+        
+        # STEP 3b: Deduplication Guard — skip if similar post exists
+        if not is_rewrite and check_duplicate_slug(site_url, login, password, seo_title):
+            print(f"   ⏩ Skipping: duplicate post already exists for this topic.")
+            if row_id:
+                update_sheet_status(row_id, "skipped", "Duplicate exists", "N/A")
+            continue
         
         # publish_to_wordpress now handles both new and updates, plus categories/tags
         post_result = publish_to_wordpress(
