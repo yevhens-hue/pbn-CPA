@@ -1,4 +1,4 @@
-import { STATIC_BONUSES } from '@/lib/bonuses';
+import { getBonuses } from '@/lib/bonuses';
 import BonusCard from '@/components/BonusCard';
 
 export const metadata = {
@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 export default function CasinoBonusesPage() {
-    const bonuses = STATIC_BONUSES.filter(b => b.type === 'casino');
+    const bonuses = getBonuses('casino', 'IN');
 
     return (
         <main className="min-h-screen bg-[#0a0d1a] py-12 px-4">
@@ -34,8 +34,8 @@ export default function CasinoBonusesPage() {
                     {['All', 'Welcome', 'Free Spins', 'Cashback', 'Reload'].map(f => (
                         <button key={f}
                             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${f === 'All'
-                                    ? 'bg-purple-600 text-white'
-                                    : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+                                ? 'bg-purple-600 text-white'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
                                 }`}>
                             {f}
                         </button>

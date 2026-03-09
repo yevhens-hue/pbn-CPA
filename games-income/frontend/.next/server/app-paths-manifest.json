@@ -1,6 +1,11 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
+  "/api/bonuses/route": "app/api/bonuses/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/betting-bonuses/page": "app/betting-bonuses/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/all-bonuses/page": "app/all-bonuses/page.js",
   "/casino-bonuses/page": "app/casino-bonuses/page.js",
-  "/betting-bonuses/page": "app/betting-bonuses/page.js"
+  "/page": "app/page.js"
 }

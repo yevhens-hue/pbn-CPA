@@ -1,4 +1,4 @@
-// File: /Users/yevhen/Cursor/games-income/frontend/app/casino-bonuses/page.tsx
+// File: /Users/yevhen/Cursor/Тестовое Affilete/games-income/frontend/app/casino-bonuses/page.tsx
 import * as entry from '../../../../app/casino-bonuses/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
