@@ -20,6 +20,8 @@ import os
 from collections import defaultdict
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 load_dotenv()
 
@@ -163,6 +165,26 @@ def add_tasks_to_sheet():
             "Pending"            # Status
         ]
         rows_to_append.append(row)
+        
+        # --- FIREBASE FIRESTORE SYNC ---
+        try:
+            if not firebase_admin._apps:
+                firebase_creds_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "pbn-automation-db-firebase-adminsdk-fbsvc-d74834318f.json")
+                cred = credentials.Certificate(firebase_creds_path)
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            db.collection("tasks").add({
+                "date": task_date,
+                "site_url": SITE_URL,
+                "target_link": TARGET_LINK,
+                "anchor": anchor,
+                "topic": topic_data['title'],
+                "style": style,
+                "status": "Pending",
+                "created_at": firestore.SERVER_TIMESTAMP
+            })
+        except Exception as e:
+            print(f"⚠️ Failed to sync task to Firestore: {e}")
     
     if rows_to_append:
         sheet.append_rows(rows_to_append)

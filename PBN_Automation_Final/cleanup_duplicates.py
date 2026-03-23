@@ -45,10 +45,34 @@ def get_auth_headers(login, app_password):
 
 def normalize_slug(slug):
     """
-    Strips trailing -N suffix to find the base slug.
-    e.g. 'aviator-game-tricks-2026-3' → 'aviator-game-tricks-2026'
+    Strips trailing -N suffix and common SEO suffixes to find the base topic.
+    e.g. 'aviator-game-tricks-2026-ultimate-guide-winning-strategies-2026-4' -> 'aviator-game-tricks-2026'
     """
-    return re.sub(r'-(\d+)$', '', slug)
+    # 1. Strip common SEO suffixes used in publish_post.py build_seo_title()
+    seo_patterns = [
+        r'-ultimate-guide-winning-strategies-2026',
+        r'-complete-expert-guide-2026',
+        r'-pro-tips-insider-secrets-2026',
+        r'-what-you-need-to-know-in-2026',
+        r'-step-by-step-strategy-guide-2026',
+        r'-the-truth-about-.*-2026-update',
+        r'-tested-methods-real-results-2026',
+        r'-everything-indian-players-must-know',
+        r'-how-to-master-.*-2026-edition',
+        r'-strategies-tips-expert-analysis',
+        r'-comprehensive-review-guide-2026',
+        r'-winning-at-.*-proven-tactics-for-2026',
+        r'-insider-secrets-2026-strategy-guide'
+    ]
+    
+    normalized = slug
+    for pattern in seo_patterns:
+        normalized = re.sub(pattern, '', normalized)
+    
+    # 2. Strip trailing numerical suffixes (-2, -3, etc.)
+    normalized = re.sub(r'-(\d+)$', '', normalized)
+    
+    return normalized
 
 def fetch_all_posts(site_url, headers):
     """Fetches ALL published posts via WP REST API (paginated)."""

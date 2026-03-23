@@ -35,6 +35,11 @@ PERSONAS = [
     {"name": "Ananya Das",      "email": "ananya.das99@gmail.com",     "style": "skeptical"},
     {"name": "Manish Gupta",    "email": "manish.g.india@gmail.com",   "style": "experienced"},
     {"name": "Pooja Mehta",     "email": "pooja.mehta.play@yahoo.in",  "style": "curious"},
+    {"name": "Arjun Choudhury", "email": "arjun.choudhury.kol@gmail.com", "style": "enthusiastic"},
+    {"name": "Sonal Jain",      "email": "sonal.jain.ca@gmail.com",    "style": "skeptical"},
+    {"name": "Karan Bajaj",     "email": "karan.bajaj.official@gmail.com", "style": "high-roller"},
+    {"name": "Neha Kapoor",     "email": "nehakapoor.vlog@gmail.com",  "style": "high-roller"},
+    {"name": "Sameer Deshmukh", "email": "s.deshmukh85@gmail.com",     "style": "experienced"},
 ]
 
 STYLE_PROMPTS = {
@@ -42,6 +47,8 @@ STYLE_PROMPTS = {
     "enthusiastic": "Write as someone excited who just tried this and had good results. Share brief enthusiasm and one specific tip. Keep it natural (2-3 sentences).",
     "experienced": "Write as a seasoned player sharing additional context from your own experience that relates to this article. Add one piece of practical advice (2-4 sentences).",
     "skeptical": "Write as someone mildly skeptical but genuinely curious. Ask for clarification about one specific claim in the article. Be polite (2-3 sentences).",
+    "high-roller": "Write as a high-stakes player who only cares about big wins and risk management. Use Hinglish and aggressive slang. (3-4 sentences).",
+    "doubter": "Write as someone who is unsure if this works but is willing to try. Ask for a proof or a specific multiplier. Use Hinglish. (2-3 sentences).",
 }
 
 
@@ -62,10 +69,11 @@ def generate_comment(post_title: str, topic: str, persona: dict) -> Optional[str
 Important rules:
 - Write ONLY the comment text, no intro, no quotes, no markdown
 - Sound like a real Indian online gambler or bettor
+- Use Hinglish (mix of Hindi in English script and English) where natural (e.g., 'Bhai', 'Yaar', 'Mota win', 'Paisa').
 - Reference something specific from the title naturally
 - Do NOT use phrases like "Great article!", "Nice post!", "Thanks for sharing!"
 - Mix in natural grammar imperfections (occasional missing comma, informal phrasing)
-- Write in English (Indian English style is fine)
+- Write in a natural, street-smart Indian style.
 """
 
     url = "https://api.groq.com/openai/v1/chat/completions"
@@ -243,19 +251,28 @@ def comment_on_recent_posts(
             return
         
         posts = resp.json()
-        # Фильтруем только посты без комментариев
-        posts_no_comments = [p for p in posts if p.get("comment_count", 1) == 0]
-        print(f"📋 Found {len(posts_no_comments)} posts without comments. Processing {num_to_comment}...")
-        
-        for post in posts_no_comments[:num_to_comment]:
+        processed = 0
+        for post in posts:
+            if processed >= num_to_comment:
+                break
+                
             title = post.get("title", {}).get("rendered", "Unknown")
             url = post.get("link", "")
             post_id = post.get("id")
             
-            if not url or not post_id:
+            # Check if post has comments by calling the replies endpoint
+            # Rate limiting: small delay to avoid overwhelming the server
+            time.sleep(random.uniform(1, 3))
+            replies_url = f"{site_url.rstrip('/')}/wp-json/wp/v2/comments"
+            r_comments = requests.get(replies_url, params={"post": post_id, "per_page": 1}, auth=(login, app_password))
+            count = int(r_comments.headers.get("X-WP-Total", 0))
+            
+            if count > 0:
+                print(f"⏭️ Skipping '{title}' (already has {count} comments)")
                 continue
 
             print(f"\n💬 Target: {title}")
+            processed += 1
             
             chosen_personas = random.sample(PERSONAS, min(comments_per_post, len(PERSONAS)))
             for i, persona in enumerate(chosen_personas):

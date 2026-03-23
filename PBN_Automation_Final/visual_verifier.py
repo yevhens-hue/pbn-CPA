@@ -36,6 +36,28 @@ def verify_link_on_page(url, target_url, anchor_text):
     except Exception as e:
         return False, str(e)
 
+def verify_layout_with_playwright(url, output_image="screenshot.png"):
+    """
+    (Playwright Feature 1: Visual Verification)
+    Takes a full-page screenshot of the URL to verify layout and design.
+    """
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            print(f"📸 Playwright: Launching browser to screenshot {url}")
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url, wait_until="networkidle", timeout=30000)
+            page.screenshot(path=output_image, full_page=True)
+            browser.close()
+            print(f"✅ Playwright: Screenshot saved to {output_image}")
+            return True, f"Saved to {output_image}"
+    except ImportError:
+         print("⚠️ Playwright not installed. Run: pip install playwright && playwright install")
+         return False, "Playwright not installed"
+    except Exception as e:
+         return False, f"Playwright error: {e}"
+
 def run_verification(results_file='results.json', output_file='verification_report.json'):
     """
     Reads results of publication and verifies each URL.

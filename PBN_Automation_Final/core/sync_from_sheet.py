@@ -6,22 +6,31 @@ import os
 # Configuration
 SHEET_ID = "1CJjN_mSwrGwp2tVuaLK0vENb2c5VnYPQw0JM43HTE-c"
 SHEET_TAB_NAME = "Report"
-CREDENTIALS_FILE = "scraper-483621-3ae386cecfc1.json"
+DEFAULT_CREDS = "scraper-483621-3ae386cecfc1.json"
+CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS", DEFAULT_CREDS)
 OUTPUT_FILE = "data/sites_data.json"
 
 def sync_data():
-    print("🔄 Connecting to Google Sheets...")
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    global CREDENTIALS_FILE
+    CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS", DEFAULT_CREDS)
+
+    print(f"🔄 Connecting to Google Sheets using {CREDENTIALS_FILE}...")
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     
-    # Adjust path if credentials are in root but script runs from core/ or root
-    # We assume script is run from root PBN_Automation_Final
     if not os.path.exists(CREDENTIALS_FILE):
         print(f"❌ Credentials file not found: {CREDENTIALS_FILE}")
         return
 
-    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_TAB_NAME)
+    try:
+        creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_TAB_NAME)
+    except Exception as e:
+        print(f"❌ Error connecting to sheet: {e}")
+        return
 
     print("📥 Fetching all records...")
     # get_all_records uses the first row as keys. 
@@ -40,37 +49,54 @@ def sync_data():
         # Find indices of required columns
         try:
             col_map = {
-                'Date': headers.index('Date'),
                 'Site URL': headers.index('Site URL'),
                 'Login': headers.index('Login'),
                 'App Password': headers.index('App Password'),
                 'Target Link': headers.index('Target Link'),
                 'Anchor Text': headers.index('Anchor Text'),
-                'Topic': headers.index('Article Topic'), # Mapped from Sheet Header
-                'Author Style': headers.index('Author Style (expert/lifestyle/neutral)')
+                'Topic': headers.index('Article Topic'),
+                'Author Style': headers.index('Author Style')
             }
         except ValueError as e:
-            # Fallback for different header names if needed
-            print(f"⚠️ Header mismatch: {e}. Trying alternative headers...")
-            # We can print headers to debug
-            print(f"Current headers: {headers}")
-            return
+            print(f"⚠️ Header mismatch: {e}. Trying fuzzy match...")
+            # Fuzzy match or fallback
+            col_map = {}
+            for target in ['Site URL', 'Login', 'App Password', 'Target Link', 'Anchor Text']:
+                try: col_map[target] = headers.index(target)
+                except: pass
+            
+            # Special cases for topic and style
+            for h in headers:
+                if 'Topic' in h: col_map['Topic'] = headers.index(h)
+                if 'Author Style' in h: col_map['Author Style'] = headers.index(h)
 
         records = []
+        seen_sites = set()
         for row in rows:
-            if len(row) < len(headers):
-                continue # Skip incomplete rows
+            if len(row) < 5: continue
+            
+            site_url = row[col_map.get('Site URL', 0)].strip()
+            login = row[col_map.get('Login', 1)].strip()
+            password = row[col_map.get('App Password', 2)].strip()
+            
+            if not site_url or not login or not password:
+                continue
+            
+            if site_url in seen_sites:
+                continue
+                
             record = {
-                'Date': row[col_map['Date']],
-                'Site URL': row[col_map['Site URL']],
-                'Login': row[col_map['Login']],
-                'App Password': row[col_map['App Password']],
-                'Target Link': row[col_map['Target Link']],
-                'Anchor Text': row[col_map['Anchor Text']],
-                'Topic': row[col_map['Topic']],
-                'Author Style': row[col_map['Author Style']]
+                'site_url': site_url,
+                'login': login,
+                'app_password': password,
+                'target_url': row[col_map.get('Target Link', 3)].strip(),
+                'anchor': row[col_map.get('Anchor Text', 4)].strip(),
+                'topic': row[col_map.get('Topic', 5)].strip(),
+                'author_style': row[col_map.get('Author Style', 6)].strip()
             }
-            records.append(record)
+            if record['site_url'].startswith('http'):
+                records.append(record)
+                seen_sites.add(site_url)
             
         sites_data = records
 

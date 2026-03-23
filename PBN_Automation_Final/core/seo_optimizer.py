@@ -70,6 +70,28 @@ def generate_review_schema(item_name, author="Aviator Expert", rating=5):
     }
     return f'<script type="application/ld+json">\n{json.dumps(schema, indent=2)}\n</script>'
 
+def generate_howto_schema(title, steps):
+    """Generates HowTo JSON-LD schema for strategy guides."""
+    if not steps:
+        return ""
+        
+    step_items = []
+    for i, step in enumerate(steps, 1):
+        step_items.append({
+            "@type": "HowToStep",
+            "name": f"Step {i}",
+            "text": step
+        })
+        
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": title,
+        "description": f"Learn the best strategies and steps for {title}.",
+        "step": step_items
+    }
+    return f'<script type="application/ld+json">\n{json.dumps(schema, indent=2)}\n</script>'
+
 def get_updated_title(title, lang='en'):
     """Prepend current month/year to titles for 'Freshness' signal."""
     now = datetime.now()
@@ -104,12 +126,29 @@ def generate_whatsapp_cta(topic):
     return html
 
 def get_random_indian_city():
-    """Returns a random major Indian city for pSEO targeting."""
+    """Returns a random major Indian city from the JSON database for pSEO targeting."""
     import random
-    cities = [
-        "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", 
-        "Chennai", "Kolkata", "Surat", "Pune", "Jaipur", 
-        "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", 
-        "Bhopal", "Visakhapatnam", "Patna", "Vadodara", "Ghaziabad"
-    ]
-    return random.choice(cities)
+    import os
+    
+    file_path = "data/cities_india.json"
+    try:
+        if not os.path.exists(file_path):
+            if os.path.exists(f"../{file_path}"):
+                file_path = f"../{file_path}"
+            elif os.path.exists(f"PBN_Automation_Final/{file_path}"):
+                file_path = f"PBN_Automation_Final/{file_path}"
+                
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            cities = [c['name'] for c in data.get('cities', [])]
+            if not cities:
+                 raise ValueError("City list is empty")
+            return random.choice(cities)
+    except Exception as e:
+        print(f"⚠️ Error loading cities_india.json: {e}")
+        # Fallback to a comprehensive list of major Indian cities
+        return random.choice([
+            "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Pune", "Chennai",
+            "Kolkata", "Ahmedabad", "Jaipur", "Surat", "Lucknow", "Kanpur",
+            "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Vadodara", "Ghaziabad"
+        ])

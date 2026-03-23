@@ -17,7 +17,46 @@ import sqlite3
 import datetime
 import requests
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+
+# Support both old oauth2client and new google-auth
+try:
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request
+    
+    class _ServiceAccountCredentials:
+        """Compatibility wrapper for google-auth with gspread."""
+        _cache = {}
+        
+        @staticmethod
+        def from_json_keyfile_dict(creds_dict, scope):
+            creds = service_account.Credentials.from_service_account_info(
+                creds_dict, scopes=list(scope)
+            )
+            return _AuthWrapper(creds)
+        
+        @staticmethod
+        def from_json_keyfile_name(filename, scope):
+            creds = service_account.Credentials.from_service_account_file(
+                filename, scopes=list(scope)
+            )
+            return _AuthWrapper(creds)
+    
+    class _AuthWrapper:
+        """Wrapper to make google-auth credentials compatible with gspread."""
+        def __init__(self, creds):
+            self._creds = creds
+        
+        def refresh(self, request):
+            self._creds.refresh(request)
+        
+        @property
+        def access_token(self):
+            return self._creds.token
+    
+    ServiceAccountCredentials = _ServiceAccountCredentials
+    
+except ImportError:
+    from oauth2client.service_account import ServiceAccountCredentials
 from typing import Optional, List
 from pathlib import Path
 from dotenv import load_dotenv

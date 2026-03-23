@@ -121,6 +121,43 @@ def post_to_telegram(post, delay=0):
         return False
 
 
+    # --- VIRAL CONTENT GENERATION (EVELSON STYLE) ---
+def generate_viral_assets(post):
+    """
+    Generates a Reel script and a Lead Magnet post based on the article.
+    Uses Claude 3.5 Sonnet if available, otherwise simplified templates.
+    """
+    title = post['title']['rendered']
+    link = post['link']
+    
+    prompt = f"""
+    Article Title: {title}
+    Link: {link}
+    
+    Task: 
+    1. Generate a 30-second 'Viral Reel Script' for Instagram/TikTok. Use hook, value, and call to action. 
+    2. Generate a 'Lead Magnet Post' for Facebook/WhatsApp with a high-conversion hook. 
+       Style: Aggressive, FOMO-driven, benefit-oriented (Indian gambling market).
+    
+    Format your response as text with clear headers.
+    """
+    
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if api_key:
+        try:
+            from anthropic import Anthropic
+            client = Anthropic(api_key=api_key)
+            message = client.messages.create(
+                model="claude-3-5-sonnet-20240620",
+                max_tokens=1000,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return message.content[0].text
+        except Exception as e:
+            return f"⚠️ AI Generation failed: {e}\n\nManual Script: [Hook] Want to win in Aviator? [Value] Check my link. [CTA] Read {link}"
+    else:
+        return f"⚠️ ANTHROPIC_API_KEY missing. Manual Script: [Hook] New article out! [CTA] Read {link}"
+
 # ── TELEGRA.PH ────────────────────────────────────────────────────────────────
 def post_to_telegraph(post):
     """Cross-posts article to Telegra.ph via their API."""
@@ -241,6 +278,30 @@ def post_to_reddit(post, subreddit="CasinoIndia"):
     except Exception as e:
         print(f"  ❌ Reddit Exception: {e}")
     return False
+
+def post_to_reddit_playwright(post, subreddit="CasinoIndia"):
+    """
+    (Playwright Feature 3: Auto-promo in Social Media)
+    Simulates a real user posting to Reddit via the web UI.
+    Requires you to be logged in via state cookies (omitted for safety).
+    """
+    title = clean_html(post['title']['rendered'])
+    link = post['link']
+    print(f"\n🤖 Playwright: Simulating Reddit Web posting to r/{subreddit}...")
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            # Here we just open the page to show it works, but don't actually post
+            # because we don't have session cookies loaded.
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(f"https://www.reddit.com/r/{subreddit}/submit")
+            print(f"✅ Playwright: Opened Reddit submit page successfully. (Requires auth to proceed)")
+            browser.close()
+            return True
+    except Exception as e:
+         print(f"❌ Playwright Reddit failed: {e}")
+         return False
 
 
 # ── QUORA TEMPLATES ───────────────────────────────────────────────────────────

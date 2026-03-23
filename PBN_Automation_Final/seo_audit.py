@@ -129,6 +129,33 @@ def check_keyword_cannibalization(urls):
             
     return issues
 
+def check_serp_with_playwright(keyword, target_domain="luckybetvip.com"):
+    """
+    (Playwright Feature 2: Smart SEO Audit)
+    Scrapes Google Search using Playwright to bypass easy blocks and find our ranking.
+    """
+    print(f"\n🔍 Playwright: Checking Google for '{keyword}'...")
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            # Navigate to google and search
+            page.goto(f"https://www.google.com/search?q={keyword}&hl=en", timeout=30000)
+            
+            # Simple check for domain in results text
+            results = page.locator("div.g").all_inner_texts()
+            browser.close()
+            
+            for index, res in enumerate(results):
+                if target_domain in res:
+                     return f"✅ '{keyword}': Ranked #{index + 1} on Page 1"
+            
+            return f"❌ '{keyword}': Not found on Page 1"
+            
+    except Exception as e:
+         return f"⚠️ Playwright SERP failed: {e}"
+
 
 def print_report(result):
     if not result:

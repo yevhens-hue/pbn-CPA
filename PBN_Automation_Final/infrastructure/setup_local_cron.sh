@@ -13,8 +13,8 @@ if [ ! -f "$SCRIPT_PATH" ]; then
 fi
 
 # 2. Define Jobs
-# Publication: Runs at 09:00 every day
-JOB_PUB="0 9 * * * bash \"$SCRIPT_PATH\" >> \"/Users/yevhen/Cursor/Тестовое Affilete/PBN_Automation_Final/logs/cron.log\" 2>&1"
+# Publication: Runs at 11:00 every day
+JOB_PUB="0 11 * * * bash \"$SCRIPT_PATH\" >> \"/Users/yevhen/Cursor/Тестовое Affilete/PBN_Automation_Final/logs/cron.log\" 2>&1"
 # Audit: Runs at 10:00 every Monday
 JOB_AUDIT="0 10 * * 1 python3 \"$AUDIT_PATH\" >> \"/Users/yevhen/Cursor/Тестовое Affilete/PBN_Automation_Final/logs/seo_audit.log\" 2>&1"
 

@@ -1,59 +1,61 @@
 # 🚀 PBN Automation Empire (Antigravity Edition)
 
-Автономная система управления сеткой PBN на базе ИИ. 
-Проект полностью готов к развертыванию на облачных платформах (Render) или выделенных серверах.
+> **⚠️ ВНИМАНИЕ:** Основная директория проекта — `PBN_Automation_Final/`. 
+> Все новые разработки ведутся в ней.
 
-## ✨ Ключевые возможности
-- **AI Content Engine:** Генерация уникальных статей через **Google Gemini 1.5 Flash** (оптимизировано под Free Tier).
-- **Easy Import:** Удобное управление через Google Sheets (CSV).
-- **Persona Shift:** Автоматическая смена стилей письма (Expert, Lifestyle, Neutral).
-- **Smart Interlinking:** Модуль автоматической перелинковки старого контента.
-- **BI Monitoring:** Подготовка данных для визуализации (SQLite/Grafana).
+## Структура проекта
 
-## 🛠 Быстрый старт (Local / VPS)
+```
+PBN_Automation_Final/    # Основная директория (активная разработка)
+├── core/                # Модули ядра
+├── docs/                # Документация
+├── infrastructure/      # Скрипты развертывания
+├── samples/             # Примеры контента
+└── publish_post.py     # Основной скрипт публикации
 
-1. **Клонируйте репозиторий:**
+games-income/           # Фронтенд Next.js для casino/betting
+├── frontend/            # Next.js приложение
+└── scraper/            # Скрейпер бонусов
+
+tests/                  # Unit тесты
+```
+
+## ⚡ Быстрый старт
+
+1. **Перейдите в основную директорию:**
    ```bash
-   git clone https://github.com/martin-scott/pbn-automation.git
-   cd pbn-automation
+   cd PBN_Automation_Final
    ```
 
 2. **Настройте окружение:**
    Создайте файл `.env` на основе `.env.example` и добавьте ваш `GEMINI_API_KEY`.
 
-3. **Подготовьте данные:**
-   - Заполните [Google Таблицу с сайтами](https://docs.google.com/spreadsheets/d/1CJjN_mSwrGwp2tVuaLK0vENb2c5VnYPQw0JM43HTE-c/edit?gid=643621907#gid=643621907).
-   - Скачайте её как CSV и сохраните как `sites_import.csv`.
-   - Запустите импорт:
-     ```bash
-     python3 core/import_from_sheets.py
-     ```
+3. **Установите зависимости:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. **Запустите публикацию:**
    ```bash
-   python3 core/publish_post.py data/sites_data.json
+   python3 publish_post.py data/sites_data.json
    ```
 
-## ☁️ Развертывание на Render.com
+## 🧪 Тестирование
 
-Проект оптимизирован для запуска в облаке Render (как Cron Job или Background Worker).
+```bash
+# Установите pytest
+pip install pytest
 
-1. Создайте новый **Background Worker** или **Cron Job** в Render Dashboard.
-2. Подключите ваш репозиторий GitHub: `https://github.com/martin-scott/pbn-automation`.
-3. Укажите Build Command: `pip install -r core/requirements.txt`.
-4. Укажите Start Command: `python3 core/publish_post.py data/sites_data.json`.
-5. Добавьте `GEMINI_API_KEY` в Environment Variables.
+# Запустите тесты
+pytest tests/ -v
+```
 
-## 🗺 Domain Scanner (New!)
-Инструмент для поиска свободных доменов в нише (например, India Gambling).
+## 📚 Документация
 
-1. **Запуск:**
-   ```bash
-   python3 core/domain_scanner.py
-   ```
-2. **Результат:**
-   - Список свободных доменов в консоли.
-   - Автоматическое добавление найденных доменов в Google Таблицу (лист `Domains`).
+- [Техническая документация](PBN_Automation_Final/docs/TECHNICAL_ROADMAP.md)
+- [План развертывания](PBN_Automation_Final/docs/DEPLOYMENT.md)
+- [Бизнес-план](PBN_Automation_Final/docs/BUSINESS_PLAN.md)
 
 ---
+
 **Разработчик:** [Martin Scott](https://github.com/martin-scott)
