@@ -11,9 +11,43 @@ from dotenv import load_dotenv
 
 # Google Sheets & SEO Imports
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+
+# Support both old oauth2client and new google-auth
+try:
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request
+    
+    class _ServiceAccountCredentials:
+        """Compatibility wrapper for google-auth with gspread."""
+        
+        @staticmethod
+        def from_json_keyfile_dict(creds_dict, scope):
+            creds = service_account.Credentials.from_service_account_info(
+                creds_dict, scopes=list(scope)
+            )
+            return creds
+        
+        @staticmethod
+        def from_json_keyfile_name(filename, scope):
+            creds = service_account.Credentials.from_service_account_file(
+                filename, scopes=list(scope)
+            )
+            return creds
+    
+    ServiceAccountCredentials = _ServiceAccountCredentials
+    
+except ImportError:
+    from oauth2client.service_account import ServiceAccountCredentials
+
 from core.indexing_api import submit_to_google_indexing
-from core.seo_optimizer import generate_game_schema, generate_faq_schema, generate_review_schema, get_updated_title, generate_whatsapp_cta, get_random_indian_city
+from core.index_now import IndexNowClient
+from core.seo_optimizer import generate_game_schema, generate_faq_schema, generate_review_schema, generate_howto_schema, get_updated_title, generate_whatsapp_cta, get_random_indian_city
+
+# AI Clients
+try:
+    from anthropic import Anthropic
+except ImportError:
+    Anthropic = None
 
 # Suppress noisy warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -61,8 +95,8 @@ def generate_ai_image(topic):
     
     print(f"🎨 Generating AI image for topic: {topic}...")
     try:
-        # We target a specific prompt style for gambling/India
-        prompt = f"Professional high-quality photography, {topic}, Indian context, luxury casino aesthetic, bokeh background, 4k resolution, no text."
+        # We target a specific prompt style for gambling/India with subtle branding hints
+        prompt = f"Professional high-quality photography, {topic}, Indian context, luxury casino aesthetic, bokeh background, 4k resolution, no text, hyper-realistic, branded colors (red and gold accents)."
         resp = requests.post(
             "https://api.openai.com/v1/images/generations",
             headers={"Authorization": f"Bearer {client_key}"},
@@ -144,6 +178,122 @@ def trigger_onesignal_notification(title, url):
         print(f"   ⚠️ OneSignal Trigger Failed: {e}")
         return False
 
+# --- UX / TECHNICAL SEO FUNCTIONS ---
+
+def inject_toc(content):
+    """
+    Parses HTML content, adds unique IDs to <h2> and <h3> tags, 
+    and generates a clickable Table of Contents block to insert after the first paragraph.
+    """
+    import re
+    
+    # 1. Find all h2 and h3
+    matches = re.findall(r'<(h[23])>(.*?)</\1>', content, re.IGNORECASE)
+    if not matches or len(matches) < 3:
+        return content # Not enough headings for a TOC
+        
+    # 2. Add IDs to headings in the content
+    toc_items = []
+    
+    def replacer(match):
+        tag = match.group(1).lower()
+        text = match.group(2)
+        # Create a simple slug ID: strip HTML tags inside text if any
+        clean_text = re.sub(r'<[^>]+>', '', text)
+        slug = re.sub(r'[^a-zA-Z0-9]', '-', clean_text.lower()).strip('-')
+        slug = re.sub(r'-+', '-', slug)
+        toc_items.append({"tag": tag, "text": clean_text, "id": slug})
+        return f'<{tag} id="{slug}">{text}</{tag}>'
+        
+    content = re.sub(r'<(h[23])>(.*?)</\1>', replacer, content, flags=re.IGNORECASE)
+    
+    # 3. Build the TOC HTML
+    toc_html = '''
+    <div class="toc-container" style="background: #111827; border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid #374151; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
+        <h3 style="margin-top: 0; color: #facc15; font-size: 1.3rem; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 15px;">📑 Table of Contents</h3>
+        <ul style="list-style: none; padding-left: 0; margin: 0; font-family: 'Inter', sans-serif;">
+    '''
+    
+    for item in toc_items:
+        margin = "0" if item["tag"] == "h2" else "20px"
+        bullet = "🔹" if item["tag"] == "h2" else "🔸"
+        weight = "bold" if item["tag"] == "h2" else "normal"
+        color = "#e5e7eb" if item["tag"] == "h2" else "#9ca3af"
+        
+        toc_html += f'<li style="margin-left: {margin}; margin-bottom: 8px;"><a href="#{item["id"]}" style="color: {color}; text-decoration: none; font-weight: {weight}; transition: color 0.2s;">{bullet} {item["text"]}</a></li>\n'
+        
+    toc_html += '</ul></div>'
+    
+    # 4. Inject TOC after the first paragraph or block
+    paragraphs = content.split('</p>')
+    if len(paragraphs) > 1:
+        paragraphs[0] = paragraphs[0] + '</p>\n' + toc_html
+        content = '</p>'.join(paragraphs)
+    else:
+        content = toc_html + content
+        
+    return content
+
+# --- E-E-A-T AUTHOR FUNCTIONS ---
+def get_author_for_topic(topic):
+    """
+    Selects a relevant expert author from authors.json based on the topic.
+    """
+    try:
+        author_path = "data/authors.json"
+        if not os.path.exists(author_path):
+            if os.path.exists(f"../{author_path}"):
+                author_path = f"../{author_path}"
+            elif os.path.exists(f"PBN_Automation_Final/{author_path}"):
+                author_path = f"PBN_Automation_Final/{author_path}"
+                
+        with open(author_path, 'r', encoding='utf-8') as f:
+            authors = json.load(f)
+            
+        topic_lower = topic.lower()
+        if 'cricket' in topic_lower or 'ipl' in topic_lower or 'bet' in topic_lower:
+            return next((a for a in authors if 'Sports Odds' in a.get('expertise', []) or 'Cricket Betting' in a.get('expertise', [])), authors[0])
+        elif 'teen patti' in topic_lower or 'live' in topic_lower or 'roulette' in topic_lower:
+            return next((a for a in authors if 'Live Casino' in a.get('expertise', []) or 'Teen Patti' in a.get('expertise', [])), authors[1])
+        else: # Crash / Aviator / General
+            return next((a for a in authors if 'Crash Games' in a.get('expertise', []) or 'Slots Analysis' in a.get('expertise', [])), authors[0])
+            
+    except Exception as e:
+        print(f"⚠️ Error loading authors.json: {e}")
+        # Default fallback
+        return {
+            "name": "Saurabh Sharma",
+            "role": "Chief iGaming Editor",
+            "bio": "Expert in Indian iGaming trends and strategies.",
+            "avatar_url": "https://luckybetvip.com/wp-content/uploads/2024/03/default-expert.jpg",
+            "social": {}
+        }
+
+def generate_author_html(author):
+    """
+    Generates an E-E-A-T 'About the Author' HTML block.
+    """
+    html = f"""
+    <div class="author-eeat-box" style="margin: 40px 0; padding: 25px; border-radius: 12px; background: linear-gradient(135deg, #1e293b, #0f172a); border-left: 5px solid #e11d48; color: #e2e8f0; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 20px;">
+        <img src="{author['avatar_url']}" alt="{author['name']}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #e11d48;">
+        <div>
+            <h4 style="margin: 0 0 5px 0; color: #fff; font-size: 1.2rem;">📝 Expert Reviewer: {author['name']}</h4>
+            <span style="display: inline-block; background: #e11d48; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">{author['role']}</span>
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.5; color: #cbd5e1;">{author['bio']}</p>
+    """
+    if 'social' in author and author['social']:
+        html += '<div style="margin-top: 12px; display: flex; gap: 10px;">'
+        if 'twitter' in author['social']:
+            html += f'<a href="{author["social"]["twitter"]}" target="_blank" style="color: #38bdf8; text-decoration: none; font-size: 0.9rem;">🐦 Twitter / X</a>'
+        if 'linkedin' in author['social']:
+            html += f'<a href="{author["social"]["linkedin"]}" target="_blank" style="color: #60a5fa; text-decoration: none; font-size: 0.9rem;">💼 LinkedIn</a>'
+        html += '</div>'
+        
+    html += """
+        </div>
+    </div>
+    """
+    return html
 
 def generate_dynamic_aviator_table():
     """Generates a realistic-looking HTML table with 'recent' game data."""
@@ -206,6 +356,54 @@ def generate_calculator_html():
     </div>
     """
     return calc_html
+
+def generate_odds_widget_html():
+    """Returns a JS-based Odds Converter & Win Probability widget."""
+    widget_html = """
+    <div class="odds-widget" style="background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid #334155; border-radius: 12px; padding: 25px; margin: 30px 0; font-family: 'Inter', sans-serif; color: #f8fafc;">
+        <h3 style="margin-top: 0; color: #facc15;">📊 Betting Odds & Probability Converter</h3>
+        <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">Convert decimal odds to win probability and estimated returns instantly.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div>
+                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">Decimal Odds:</label>
+                <input type="number" id="dec_odds" value="1.95" step="0.01" style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; border-radius: 6px; color: #fff;" oninput="updateOdds()">
+            </div>
+            <div>
+                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">Stake (INR):</label>
+                <input type="number" id="stake_amt" value="1000" style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; border-radius: 6px; color: #fff;" oninput="updateOdds()">
+            </div>
+        </div>
+
+        <div style="background: #020617; border-radius: 8px; padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+            <div style="border-right: 1px solid #101827;">
+                <span style="font-size: 12px; color: #64748b; text-transform: uppercase;">Win Probability</span><br>
+                <strong id="prob_val" style="font-size: 20px; color: #10b981;">51.28%</strong>
+            </div>
+            <div>
+                <span style="font-size: 12px; color: #64748b; text-transform: uppercase;">Potential Return</span><br>
+                <strong id="return_val" style="font-size: 20px; color: #fff;">₹1,950</strong>
+            </div>
+        </div>
+        
+        <script>
+        function updateOdds() {
+            var odds = document.getElementById('dec_odds').value;
+            var stake = document.getElementById('stake_amt').value;
+            if (odds > 1) {
+                var prob = (1 / odds) * 100;
+                var ret = odds * stake;
+                document.getElementById('prob_val').innerText = prob.toFixed(2) + '%';
+                document.getElementById('return_val').innerText = '₹' + Math.round(ret).toLocaleString('en-IN');
+            } else {
+                document.getElementById('prob_val').innerText = '0%';
+                document.getElementById('return_val').innerText = '₹0';
+            }
+        }
+        </script>
+    </div>
+    """
+    return widget_html
 
 def get_used_topics(results_file="results.json"):
     """
@@ -519,18 +717,14 @@ def build_seo_title(topic, year=2026):
     clean_topic = topic.replace(str(year), '').strip().rstrip(':').strip()
     
     templates = [
-        f"{clean_topic}: Complete Expert Guide {year}",
-        f"{clean_topic} — Pro Tips & Insider Secrets ({year})",
-        f"{clean_topic}: What You Need to Know in {year}",
-        f"{clean_topic} | Step-by-Step Strategy Guide {year}",
-        f"The Truth About {clean_topic} ({year} Update)",
-        f"{clean_topic}: Tested Methods & Real Results {year}",
-        f"{clean_topic} — Everything Indian Players Must Know",
-        f"How to Master {clean_topic}: {year} Edition",
-        f"{clean_topic}: Strategies, Tips & Expert Analysis",
-        f"{clean_topic} in {year}: A Deep Dive for Beginners",
-        f"{clean_topic} — Comprehensive Review & Guide {year}",
         f"Winning at {clean_topic}: Proven Tactics for {year}",
+        f"Mastering {clean_topic}: A Comprehensive {year} Walkthrough",
+        f"{clean_topic} Secrets Revealed: How to Win Big in {year}",
+        f"The Ultimate {clean_topic} Guide: Tips, Tricks & Strategies",
+        f"Why {clean_topic} is Taking Over India in {year}",
+        f"{clean_topic} Explained: RNG, Odds & Winning Patterns",
+        f"Top {clean_topic} Strategies for Indian Players ({year})",
+        f"Indian Gambler's Guide to {clean_topic}: {year} Edition",
     ]
     return random.choice(templates)
 
@@ -855,26 +1049,23 @@ def inject_internal_links(content, related_posts, current_topic):
     
     # --- Cornerstone link block (always included) ---
     topic_lower = current_topic.lower()
-    if 'cricket' in topic_lower or 'ipl' in topic_lower:
-        cornerstone_url = 'https://luckybetvip.com/cricket-betting-guide/'
-        cornerstone_text = '🏏 Complete Cricket Betting Guide India 2026'
-    elif 'teen patti' in topic_lower or 'patti' in topic_lower:
-        cornerstone_url = 'https://luckybetvip.com/teen-patti-guide/'
-        cornerstone_text = '🃏 Ultimate Teen Patti Real Money Guide 2026'
-    elif 'rummy' in topic_lower:
-        cornerstone_url = 'https://luckybetvip.com/rummy-guide/'
-        cornerstone_text = '🃏 Online Rummy Guide: Win Real Money in India'
-    else:
-        # Check if topic is a review or strategy
-        if 'review' in topic_lower:
-            cornerstone_url = 'https://luckybetvip.com/casino-reviews/'
-            cornerstone_text = '⭐ Top-Rated Online Casinos in India: 2026 Reviews'
-        elif 'strategy' in topic_lower or 'trick' in topic_lower:
-            cornerstone_url = 'https://luckybetvip.com/aviator-strategy/'
-            cornerstone_text = '📈 Professional Aviator Strategies: Master the Algorithm'
-        else:
-            cornerstone_url = 'https://luckybetvip.com/aviator-guide/'
-            cornerstone_text = '✈️ Complete Aviator Game Guide for India Players'
+    pillars = {
+        "cricket": {"url": "https://luckybetvip.com/cricket-betting-guide/", "text": "🏏 Complete Cricket Betting Guide India 2026"},
+        "patti": {"url": "https://luckybetvip.com/teen-patti-guide/", "text": "🃏 Ultimate Teen Patti Real Money Guide 2026"},
+        "rummy": {"url": "https://luckybetvip.com/rummy-guide/", "text": "🃏 Online Rummy Guide: Win Real Money in India"},
+        "review": {"url": "https://luckybetvip.com/casino-reviews/", "text": "⭐ Top-Rated Online Casinos in India: 2026 Reviews"},
+        "strategy": {"url": "https://luckybetvip.com/aviator-strategy/", "text": "📈 Professional Aviator Strategies: Master the Algorithm"},
+        "aviator": {"url": "https://luckybetvip.com/aviator-guide/", "text": "✈️ Complete Aviator Game Guide for India Players"}
+    }
+    
+    selected_pillar = pillars["aviator"] # Default
+    for key, data in pillars.items():
+        if key in topic_lower:
+            selected_pillar = data
+            break
+            
+    cornerstone_url = selected_pillar["url"]
+    cornerstone_text = selected_pillar["text"]
 
     cornerstone_html = f'\n<div class="cornerstone-link" style="background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid #e11d48;border-radius:10px;padding:15px 20px;margin:30px 0;">\n'
     cornerstone_html += f'<p style="margin:0;font-size:1.1rem;"><strong>📖 Read Next:</strong> <a href="{cornerstone_url}" style="color:#facc15;text-decoration:none;" rel="dofollow">{cornerstone_text}</a></p>\n</div>\n'
@@ -905,6 +1096,43 @@ def inject_internal_links(content, related_posts, current_topic):
     else:
         content += links_html
     
+    return content
+
+def inject_ecosystem_links(content, topic):
+    """
+    Injects AstroCrashGame banner and Games Income contextual links into the content.
+    """
+    # 1. AstroCrashGame Banner
+    astro_html = """
+    <div class="astro-crash-banner" style="background: linear-gradient(135deg, #1e1b4b, #4338ca); border-radius: 16px; padding: 30px; margin: 40px 0; text-align: center; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.3); border: 2px solid #818cf8; overflow: hidden; position: relative;">
+        <h3 style="color: #ffffff; margin-top: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">🚀 Play AstroCrashGame</h3>
+        <p style="color: #e2e8f0; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; font-weight: 500;">Tired of losing? Experience the next generation of crash games. Fair algorithms, massive multipliers, and instant payouts right in Telegram.</p>
+        <a href="https://t.me/AstroCrashGame_bot" target="_blank" rel="noopener sponsored" style="display: inline-block; background: #fbbf24; color: #1e1b4b; padding: 14px 35px; font-size: 1.1rem; font-weight: bold; text-decoration: none; border-radius: 50px; text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);">Launch Game directly in Telegram</a>
+    </div>
+    """
+
+    # 2. Games Income Link Contextual
+    games_income_html = """
+    <div class="games-income-promo" style="background: rgba(15, 23, 42, 0.6); border-left: 4px solid #38bdf8; padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0;">
+        <h4 style="color: #38bdf8; margin-top: 0; font-size: 1.2rem;">🎁 Exclusive Bonuses for Indian Players</h4>
+        <p style="color: #cbd5e1; margin-bottom: 0;">Looking for the best promotional codes, deposit bonuses, and trusted reviews? Check out <a href="https://games-income.com" rel="dofollow" style="color: #facc15; font-weight: bold; text-decoration: underline;">Games Income</a> for our verified list of top crash game platforms and exclusive 2026 offers.</p>
+    </div>
+    """
+    
+    # Inject astro_html after the first 3 paragraphs (or in the middle)
+    paragraphs = content.split('</p>')
+    if len(paragraphs) > 4:
+        paragraphs[3] = paragraphs[3] + '</p>\n' + astro_html
+        content = '</p>'.join(paragraphs)
+    else:
+        content = astro_html + content
+
+    # Inject games_income_html before conclusion or at the end
+    if '<h2>Conclusion</h2>' in content:
+        content = content.replace('<h2>Conclusion</h2>', games_income_html + '\n<h2>Conclusion</h2>')
+    else:
+        content += '\n' + games_income_html
+        
     return content
 
 def find_wp_post_id(site_url, username, app_password, title):
@@ -966,11 +1194,48 @@ def update_existing_post(site_url, username, app_password, target_url, anchor, t
     print(f"   🔍 Поиск релевантных статей для перелинковки по теме '{topic}'...")
     return None
 
+def generate_pseo_article(topic, target_link, anchor_text, lang='en', author=None):
+    """
+    Generates a localized article for a specific topic + city.
+    This uses a specialized prompt to ensure the city is mentioned naturally as a local hub.
+    """
+    print(f"   🌍 [PSEO Mode] Generating localized content for: {topic}...")
+    
+    city = ""
+    # Extract city from topic if it was appended (topic usually is "Original Topic in City")
+    if " in " in topic:
+        city = topic.split(" in ")[-1]
+        
+    prompt = f"""
+    You are an expert iGaming consultant specializing in the Indian market.
+    Your task is to write a localized, GEO-targeted SEO article.
+    
+    Topic: {topic}
+    City Spotlight: {city}
+    Language: {lang}
+    
+    CRITICAL REQUIREMENTS:
+    1. **Local Context**: Mention {city} naturally throughout the article. Discuss local trends, popular payment methods in {city} (like UPI/Paytm), and the local gaming community.
+    2. **Expert Authority**: Use first-person experience. Mention "When I was in {city} testing these strategies..." or "Players in {city} have reported...".
+    3. **Conversion**: Integrate the promo code `1x_4393603` and recommend 1xBet as the best platform for users in {city}.
+    4. **Structure**: Use H1, H2, H3. Include a dynamic data table of local win rates.
+    5. **TOC & Schema**: Return valid HTML. Do NOT include Table of Contents or Author block, as they will be injected automatically later.
+    
+    Return ONLY clean HTML. 
+    """
+    
+    # We use the existing gemini/groq infrastructure via generate_article logic
+    # but with this PSEO-specific prompt.
+    # To keep it simple, we'll let generate_article handle the API calls.
+    return prompt
+
 def generate_article(topic, target_link, anchor_text, author_style='neutral', lang='en', use_ai_images=False, use_pseo=False):
     """
     Core content generation engine.
     lang: 'en', 'hi' (Hindi), 'bn' (Bengali), 'te' (Telugu), 'mr' (Marathi)
     """
+    author = get_author_for_topic(topic)
+    
     # Check if we should override topic from content plan
     planned_content = None
     # If topic is explicitly set to 'random' or placeholder, grab from plan
@@ -1000,87 +1265,91 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
         topic = get_updated_title(topic, lang=lang)
         
         # pSEO Injection: Add City if requested
+        city_name = ""
         if use_pseo:
-            city = get_random_indian_city()
-            topic = f"{topic} in {city}"
-            print(f"📍 pSEO Active: Targeting {city}...")
-        
-        lang_name, lang_req = lang_config.get(lang, lang_config['en'])
-        
-        if lang != 'en':
-            role = f"You are an elite iGaming analyst and insider for the Indian market, writing in {lang_name}."
+            city_name = get_random_indian_city()
+            topic = f"{topic} in {city_name}"
+            print(f"📍 pSEO Active: Targeting {city_name}...")
+            # Use specialized PSEO prompt
+            prompt = generate_pseo_article(topic, target_link, anchor_text, lang=lang, author=author)
         else:
-            role = f"You are an elite iGaming analyst and insider for the Indian market. {STYLE_PROMPTS.get(author_style, STYLE_PROMPTS['neutral'])}"
+            lang_name, lang_req = lang_config.get(lang, lang_config['en'])
+            
+            if lang != 'en':
+                role = f"You are an elite iGaming analyst and insider for the Indian market, writing in {lang_name}."
+            else:
+                role = f"You are an elite iGaming analyst and insider for the Indian market. {STYLE_PROMPTS.get(author_style, STYLE_PROMPTS['neutral'])}"
 
-        prompt = f"""
-        {role}
-        
-        Task: Write a MASSIVE, comprehensive, and high-converting SEO article in HTML format.
-        Language Requirement: {lang_req}
-        Topic: {topic}
-        Main Keyword: {keyword}
-        User Intent: {intent} (Users want SECRETS, HACKS, and WINNING TRICKS).
-        Target Audience: Indian players (use ₹, mention UPI/Paytm, use specific local context).
+            prompt = f"""
+            {role}
+            
+            Task: Write a MASSIVE, comprehensive, and high-converting SEO article in HTML format.
+            Language Requirement: {lang_req}
+            Topic: {topic}
+            Main Keyword: {keyword}
+            User Intent: {intent} (Users want SECRETS, HACKS, and WINNING TRICKS).
+            Target Audience: Indian players (use ₹, mention UPI/Paytm, use specific local context).
 
-        # HTML FORMATTING RULES (STRICT):
-        1. **Hero Section**: Start the article with a <div class="hero-section"> containing a <span class="hero-badge">NEW: Insider Guide</span>, 
-           the H1, and a 2-sentence emotional hook.
-        2. **Glassmorphism**: Wrap the "Insider Secrets" or "Strategies" section in a <div class="glass-card"> container.
-        3. Wrap every strategy in a <div class='strategy-card'>.
-        4. Use 🎯 emoji for 'Key Aspects'.
-        5. Format Pros/Cons using: <div class='grid-pc'><div class='p'><h4>Pros</h4><ul><li>Pro 1</li></ul></div><div class='c'><h4>Cons</h4><ul><li>Con 1</li></ul></div></div>.
-        6. ALL images must have unique, descriptive ALT text related to the topic (e.g., alt="Aviator game strategy India 2026").
+            # HTML FORMATTING RULES (STRICT):
+            1. **Hero Section**: Start the article with a <div class="hero-section"> containing a <span class="hero-badge">NEW: Insider Guide</span>, 
+               the H1, and a 2-sentence emotional hook.
+            2. **Glassmorphism**: Wrap the "Insider Secrets" or "Strategies" section in a <div class="glass-card"> container.
+            3. Wrap every strategy in a <div class='strategy-card'>.
+            4. Use 🎯 emoji for 'Key Aspects'.
+            5. Format Pros/Cons using: <div class='grid-pc'><div class='p'><h4>Pros</h4><ul><li>Pro 1</li></ul></div><div class='c'><h4>Cons</h4><ul><li>Con 1</li></ul></div></div>.
+            6. ALL images must have unique, descriptive ALT text related to the topic (e.g., alt="Aviator game strategy India 2026").
 
-        Structure Requirements (Critical - MUST FOLLOW):
-        1. Length: **EXTREME PRIORITY - Minimum 3000 words**. This MUST be a long-form authority guide.
-        2. **E-E-A-T & Personal Experience**: Google rewards content with first-hand experience. Throughout the article, 
-           use phrases like "I tested this...", "In my session with 5,000 INR...", "After 200 rounds, I observed...". 
-           Include specific data points and real-life scenarios to prove this isn't just generic AI text.
-        3. **Insider Insights: Algorithm Analysis**: Include a massive section titled "Insider Secrets: Algorithm Analysis".
-           - Discuss "RNG patterns" and hidden cycles.
-           - Mention specific "Signals" (e.g., "The Double-Pink Strategy", "Blue Streak Recovery").
-           - Use local Indian gambling terminology (e.g., "khowa", "patti", "chal") to build trust.
-           - Make it sound exclusive, expert-level, and backed by "community data".
-        4. Use an engaging <h1> tag.
-        5. Use at least 15-20 <h2> subheadings and 10-15 <h3> subheadings.
-        6. Include a "FAQ" section at the end with 10+ questions and answers.
-        7. **SEO Schema - CRITICAL**: After the FAQ section, add a valid JSON-LD FAQ Schema block:
-           ```html
-           <script type="application/ld+json">
-           {{
-             "@context": "https://schema.org",
-             "@type": "FAQPage",
-             "mainEntity": [
+            Structure Requirements (Critical - MUST FOLLOW):
+            1. Length: **EXTREME PRIORITY - Minimum 3000 words**. This MUST be a long-form authority guide.
+            2. **E-E-A-T & Personal Experience**: Google rewards content with first-hand experience. Throughout the article, 
+               use phrases like "I tested this...", "In my session with 5,000 INR...", "After 200 rounds, I observed...". 
+               Include specific data points, betting logs, real-life scenarios, and screenshots descriptions to prove this isn't just generic AI text.
+               Discuss specific outcomes: "The multiplier hit 10x three times in a row," or "I lost small but recovered on the 4th round."
+            3. **Insider Insights: Algorithm Analysis**: Include a massive section titled "Insider Secrets: Algorithm Analysis".
+               - Discuss "RNG patterns", seed generation, and hidden cycles.
+               - Mention specific "Signals" (e.g., "The Double-Pink Strategy", "Blue Streak Recovery").
+               - Use local Indian gambling terminology (e.g., "khowa", "patti", "chal", "mota") to build trust.
+               - Make it sound exclusive, expert-level, and backed by "community data from Telegram".
+            4. Use an engaging <h1> tag.
+            5. Use at least 15-20 <h2> subheadings and 10-15 <h3> subheadings.
+            6. Include a "FAQ" section at the end with 10+ questions and answers.
+            7. **SEO Schema - CRITICAL**: After the FAQ section, add a valid JSON-LD FAQ Schema block:
+               ```html
+               <script type="application/ld+json">
                {{
-                 "@type": "Question",
-                 "name": "[FAQ Question 1 about {topic}]",
-                 "acceptedAnswer": {{
-                   "@type": "Answer",
-                   "text": "[Answer 1]"
-                 }}
-               }},
-               {{
-                 "@type": "Question",
-                 "name": "[FAQ Question 2 about {topic}]",
-                 "acceptedAnswer": {{
-                   "@type": "Answer",
-                   "text": "[Answer 2]"
-                 }}
+                 "@context": "https://schema.org",
+                 "@type": "FAQPage",
+                 "mainEntity": [
+                   {{
+                     "@type": "Question",
+                     "name": "[FAQ Question 1 about {topic}]",
+                     "acceptedAnswer": {{
+                       "@type": "Answer",
+                       "text": "[Answer 1]"
+                     }}
+                   }},
+                   {{
+                     "@type": "Question",
+                     "name": "[FAQ Question 2 about {topic}]",
+                     "acceptedAnswer": {{
+                       "@type": "Answer",
+                       "text": "[Answer 2]"
+                     }}
+                   }}
+                 ]
                }}
-             ]
-           }}
-           </script>
-           ```
-           Fill in at least 5 real FAQ questions and answers from the article.
-        7. **Affiliate Integration**:
-           - Use the localized link `/go/1xbet` for all text links with anchor "{anchor_text}".
-           - **PROMO CODE**: Explicitly mention the promo code `1x_4393603` throughout the article.
-           - **BENEFITS**: Stress that this promo code gives an increased registration bonus, has unlimited validity, and can be shared with friends.
-           - **CRITICAL**: After the Winning Strategies section, insert: `[play_1xbet]`
-           - **CRITICAL**: At the very end, insert: `[play_1xbet]`
-        
-        Format Requirement: Return ONLY valid HTML code. No <html> or <body> tags. No markdown blocks.
-        """
+               </script>
+               ```
+               Fill in at least 5 real FAQ questions and answers from the article.
+            7. **Affiliate Integration**:
+               - Use the localized link `/go/1xbet` for all text links with anchor "{anchor_text}".
+               - **PROMO CODE**: Explicitly mention the promo code `1x_4393603` throughout the article.
+               - **BENEFITS**: Stress that this promo code gives an increased registration bonus, has unlimited validity, and can be shared with friends.
+               - **CRITICAL**: After the Winning Strategies section, insert: `[play_1xbet]`
+               - **CRITICAL**: At the very end, insert: `[play_1xbet]`
+            
+            Format Requirement: Return ONLY valid HTML code. No <html> or <body> tags. No markdown blocks.
+            """
     else:
         # FALLBACK: If planned_content is None but we had a placeholder, FORCE a fallback topic
         if "{random_india_topic}" in topic or topic == "random":
@@ -1096,11 +1365,11 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
         print(f"Generating content (Style: {author_style}) for topic: {topic}")
         style_instruction = STYLE_PROMPTS.get(author_style, STYLE_PROMPTS['neutral'])
         lang_config = {
-            'hi': ("Hindi (Devanagari)", "Write in Hindi. Keep tech terms in English."),
-            'bn': ("Bengali", "Write in Bengali. Keep tech terms in English."),
-            'te': ("Telugu", "Write in Telugu. Keep tech terms in English."),
-            'mr': ("Marathi", "Write in Marathi. Keep tech terms in English."),
-            'en': (None, "Write in English for the Indian market.")
+            'hi': ("Hindi (Devanagari)", "Write in professional Hindi. Keep tech terms (multiplier, strategy, seed, bet) in English script or Latin. Focus on trust and legal clarity."),
+            'bn': ("Bengali", "Write in Bengali. Keep technical gaming terms in English. Use formal but engaging tone."),
+            'te': ("Telugu", "Write in Telugu. Focus on IPL and Cricket betting fans in Andhra/Telangana. Keep tech terms in English."),
+            'mr': ("Marathi", "Write in Marathi. Focus on the Mumbai/Pune local context and gaming trends."),
+            'en': (None, "Write in English with a strong Indian cultural and iGaming context.")
         }
         lang_name, lang_req = lang_config.get(lang, lang_config['en'])
 
@@ -1143,107 +1412,191 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
         11. **Hero Section**: Start with a <div class="hero-section text-center"><span class="hero-badge">2026 Updated</span><h1>{topic}</h1><p class="lead">Insider 1xBet insights for Indian players...</p></div>
         """
     
-    # Raw HTTP Request to bypass library issues
-    # gemini-2.0-flash returned 429, meaning it exists!
-    gemini_key = os.getenv('GEMINI_API_KEY', '').strip()
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
+    # --- CLAUDE (EVELSON STACK) FIRST ---
+    print("🧠 Using Claude 3.5 Sonnet (Evelson SEO Stack)...")
+    res = generate_with_claude(prompt, topic, author, use_ai_images=use_ai_images)
+    if res and res[1]:
+        return res
+        
+    # --- FALLBACK 1: OPENROUTER (DISABLED DUE TO HANGS) ---
+    # print("⚠️ Claude failed or rate limited (429). Falling back to OpenRouter (Llama 3.3 70B)...")
+    # res = generate_with_openrouter(prompt, topic, author, use_ai_images=use_ai_images)
+    # if res and res[1]:
+    #     return res
 
-    headers = {'Content-Type': 'application/json'}
+    # --- FALLBACK 2: GROQ (LAST RESORT) ---
+    print("⚠️ OpenRouter disabled/failed. Switching to Groq API (Llama 3.1 8B) for stability...")
+    return generate_with_groq(prompt, topic, author, use_ai_images=use_ai_images)
+
+
+
+def generate_with_openrouter(prompt, topic, author, use_ai_images=False):
+    """
+    Fallback content generation using OpenRouter API (meta-llama/llama-3.3-70b-instruct).
+    Set OPENROUTER_API_KEY in your .env to enable.
+    """
+    openrouter_key = os.getenv('OPENROUTER_API_KEY', '').strip()
+    if not openrouter_key:
+        print("   ⚠️ OPENROUTER_API_KEY not set. Skipping OpenRouter.")
+        return None, None, None
+
+    print("   🚀 Switching to OpenRouter API (meta-llama/llama-3.3-70b-instruct)...")
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        'Authorization': f'Bearer {openrouter_key}',
+        'Content-Type': 'application/json'
+    }
     payload = {
-        "contents": [{
-            "parts": [{"text": prompt}]
-        }]
+        "model": "meta-llama/llama-3.3-70b-instruct",
+        "messages": [
+            {"role": "system", "content": "You are an elite iGaming SEO expert. Always respond with valid HTML only, no markdown."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7
     }
 
-    max_attempts = 3
-    for attempt in range(max_attempts):
-        try:
-            print(f"   🤖 Attempt {attempt+1}/{max_attempts} calling Gemini...")
-            response = requests.post(url, headers=headers, json=payload, timeout=60)
+    try:
+        response = requests.post(url, headers=headers, json=payload, timeout=90)
+        if response.status_code == 200:
+            result = response.json()
+            content = result['choices'][0]['message']['content']
+            content = content.replace('```html', '').replace('```', '').strip()
             
-            if response.status_code == 200:
-                result = response.json()
-                try:
-                    content = result['candidates'][0]['content']['parts'][0]['text']
-                    content = content.replace('```html', '').replace('```', '')
-                    
-                    # INJECT IMAGES LOGIC - unique images (no duplicates)
-                    try:
-                         picked = []
-                         if use_ai_images:
-                             ai_img = generate_ai_image(topic)
-                             if ai_img: picked.append(ai_img)
-                         
-                         if len(picked) < 2:
-                             # Fill remaining or all with stock
-                             available = list(set(GAMBLING_IMAGES))
-                             to_pick = 2 - len(picked)
-                             picked.extend(random.sample(available, min(to_pick, len(available))))
-
-                         parts = content.split('</p>')
-                         if len(parts) > 2:
-                             img_html1 = f'<div class="post-image" style="margin: 20px 0;"><img src="{picked[0]}" alt="{topic} India" style="width:100%; border-radius:8px;" loading="lazy"></div>'
-                             parts[1] = parts[1] + img_html1
-                         if len(parts) > 5 and len(picked) > 1:
-                             img_html2 = f'<div class="post-image" style="margin: 20px 0;"><img src="{picked[1]}" alt="Casino strategy {topic}" style="width:100%; border-radius:8px;" loading="lazy"></div>'
-                             parts[4] = parts[4] + img_html2
-                         content = '</p>'.join(parts)
-                         
-                         # SEO Injection: Dynamic Table, WhatsApp CTA & Calculator
-                         content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
-                         
-                         # Inject WhatsApp CTA in the middle (after 3rd paragraph if possible)
-                         if len(parts) > 3:
-                             content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
-                         if '<h2>Conclusion</h2>' in content:
-                             content = content.replace('<h2>Conclusion</h2>', f'{generate_calculator_html()}<h2>Conclusion</h2>', 1)
-                         else:
-                             content += generate_calculator_html()
-                             
-                    except Exception as img_err:
-                        print(f'⚠️ Image injection failed: {img_err}')
-
-                    # --- SEO SCHEMA INJECTION (Gemini) ---
-                    schema_html = generate_game_schema()
-                    faq_pairs = [
-                       ("Is Aviator game legal in India?", "Yes, it is legal to play on international licensed platforms."),
-                       ("What is the minimum deposit?", "The minimum deposit varies by site but usually starts from ₹300-500.")
-                    ]
-                    schema_html += generate_faq_schema(faq_pairs)
-                    schema_html += generate_review_schema(topic)
-                    content += f"\n\n{schema_html}"
-
-                    return topic, content, "gemini-2.0-flash (Raw HTTP)"
-                except (KeyError, IndexError) as e:
-                    print(f"⚠️ API Response Parsing Error: {e}. Body: {result}")
-                    raise ValueError("Invalid API response structure")
-            elif response.status_code == 429:
-                # Exponential backoff for 429
-                wait_time = min(60 * (2 ** (attempt // 2)), 300) 
-                print(f"   ⏳ Rate Limited (429). Waiting {wait_time}s...")
-                time.sleep(wait_time)
-                continue
-            else:
-                print(f"⚠️ API Error {response.status_code}: {response.text}")
-                # For some errors, waiting might help, for others (400) it won't.
-                time.sleep(10)
-                continue
+            # Inject 2 UNIQUE images (random.sample prevents duplicates)
+            try:
+                picked = []
+                if use_ai_images:
+                    ai_img = generate_ai_image(topic)
+                    if ai_img: picked.append(ai_img)
                 
-        except Exception as e:
-            print(f"⚠️ Generation error: {e}.")
-            if attempt == max_attempts - 1:
-                print("❌ All attempts failed. Skipping content generation.")
-                return None, None, None
-            time.sleep(10)
+                if len(picked) < 2:
+                    available = list(set(GAMBLING_IMAGES))
+                    to_pick = 2 - len(picked)
+                    picked.extend(random.sample(available, min(to_pick, len(available))))
+
+                parts = content.split('</p>')
+                if len(parts) > 2:
+                    parts[1] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[0]}" alt="{topic} India" style="width:100%;border-radius:8px;" loading="lazy"></div>'
+                if len(parts) > 4 and len(picked) > 1:
+                    parts[min(4, len(parts)-2)] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[1]}" alt="Casino tips {topic}" style="width:100%;border-radius:8px;" loading="lazy"></div>'
+                content = '</p>'.join(parts)
+                
+            except Exception as e:
+                print(f"⚠️ Image injection failed: {e}")
+
+            # SEO Injection
+            content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+            parts = content.split('</p>')
+            if len(parts) > 3:
+                 content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
             
-    # --- GROQ FALLBACK: Gemini failed all retries, try Groq ---
-    print("⚡ Gemini exhausted all retries. Trying Groq API fallback...")
-    return generate_with_groq(prompt, topic, use_ai_images=use_ai_images)
+            if '<h2>Conclusion</h2>' in content:
+                content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
+            else:
+                content += generate_odds_widget_html() + generate_calculator_html()
+            
+            # --- SEO SCHEMA INJECTION ---
+            schema_html = generate_game_schema()
+            faq_pairs = [
+                ("Is Aviator game legal in India?", "Yes, it is legal to play on international licensed platforms like 1Win."),
+                ("Can I withdraw in INR?", "Yes, you can withdraw your winnings via UPI, Paytm, and local bank transfer.")
+            ]
+            schema_html += generate_faq_schema(faq_pairs)
+            _author_name = author['name'] if isinstance(author, dict) else "Saurabh Sharma"
+            schema_html += generate_review_schema(topic, author=_author_name)
+            
+            if 'strateg' in topic.lower() or 'trick' in topic.lower() or 'how to' in topic.lower():
+                steps = [
+                    "Register or log in to your verified 1xBet account.",
+                    "Fund your wallet securely using UPI, Paytm or Bank Transfer.",
+                    "Set your strict session bankroll and stick to it.",
+                    "Choose the game and apply the strategy with minimum bets first to test RNG patterns.",
+                    "Cash out winnings early to minimize risk and avoid chasing losses."
+                ]
+                schema_html += "\n" + generate_howto_schema(topic, steps)
+                
+            content += f"\n\n{schema_html}"
+            
+            # --- E-E-A-T AUTHOR INJECTION ---
+            content += generate_author_html(author)
 
+            print(f"   ✅ OpenRouter generated content ({len(content)} chars)")
+            return topic, content, "openrouter-llama3.3-70b"
+        else:
+            print(f"   ❌ OpenRouter Error {response.status_code}: {response.text[:200]}")
+            return None, None, None
+    except Exception as e:
+        print(f"   ❌ OpenRouter request failed: {e}")
+        return None, None, None
 
-def generate_with_groq(prompt, topic, use_ai_images=False):
+def generate_with_claude(prompt, topic, author, use_ai_images=False):
     """
-    Fallback content generation using Groq API (llama-3.3-70b-versatile).
+    Premium content generation using Anthropic Claude 3.5 Sonnet.
+    Matches Anton Evelson's identified stack.
+    """
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not Anthropic or not api_key:
+        print("   ⚠️ Anthropic API key or library missing. Falling back...")
+        return None, None, None
+
+    print(f"   🧠 Generating premium content with Claude 3.5 Sonnet...")
+    try:
+        client = Anthropic(api_key=api_key)
+        message = client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=4096,
+            temperature=0.7,
+            system="You are an elite iGaming SEO expert. Always respond with valid HTML only. Include H1, H2, H3 tags. No markdown formatting.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = message.content[0].text
+        content = content.replace('```html', '').replace('```', '').strip()
+
+        # Image Injection Logic (reused from DALL-E/Fallback)
+        picked = []
+        if use_ai_images:
+            ai_img = generate_ai_image(topic)
+            if ai_img: picked.append(ai_img)
+        
+        if len(picked) < 2:
+            available = list(set(GAMBLING_IMAGES))
+            picked.extend(random.sample(available, min(2 - len(picked), len(available))))
+
+        parts = content.split('</p>')
+        if len(parts) > 2:
+            parts[1] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[0]}" alt="{topic}" style="width:100%;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);" loading="lazy"></div>'
+        if len(parts) > 5 and len(picked) > 1:
+            parts[min(5, len(parts)-2)] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[1]}" alt="{topic} tips" style="width:100%;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);" loading="lazy"></div>'
+        content = '</p>'.join(parts)
+
+        # SEO & Widget Injection
+        content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+        content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
+        
+        if '<h2>Conclusion</h2>' in content:
+            content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
+        else:
+            content += generate_odds_widget_html() + generate_calculator_html()
+
+        # Schema Injection
+        schema_html = generate_game_schema()
+        content += f"\n\n{schema_html}"
+        content += generate_author_html(author)
+
+        return topic, content, "claude-3.5-sonnet"
+
+    except Exception as e:
+        # Check specifically for RateLimitError if possible
+        error_msg = str(e)
+        if "429" in error_msg or "rate_limit" in error_msg.lower():
+            print(f"   🛑 Claude Rate Limit reached (429).")
+        else:
+            print(f"   ❌ Claude request failed: {e}")
+        return None, None, None
+
+def generate_with_groq(prompt, topic, author, use_ai_images=False):
+    """
+    Fallback content generation using Groq API (llama-3.1-8b-instant).
     Fast, free, and generous rate limits (30 req/min).
     Set GROQ_API_KEY in your .env to enable.
     """
@@ -1252,14 +1605,14 @@ def generate_with_groq(prompt, topic, use_ai_images=False):
         print("   ⚠️ GROQ_API_KEY not set. Skipping Groq fallback.")
         return None, None, None
 
-    print("   🚀 Switching to Groq API (llama-3.3-70b-versatile)...")
+    print("   🚀 Switching to Groq API (llama-3.1-8b-instant)...")
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
         'Authorization': f'Bearer {groq_key}',
         'Content-Type': 'application/json'
     }
     payload = {
-        "model": "llama-3.3-70b-versatile",
+        "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": "You are an elite iGaming SEO expert. Always respond with valid HTML only, no markdown."},
             {"role": "user", "content": prompt}
@@ -1304,9 +1657,9 @@ def generate_with_groq(prompt, topic, use_ai_images=False):
                  content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
             
             if '<h2>Conclusion</h2>' in content:
-                content = content.replace('<h2>Conclusion</h2>', f'{generate_calculator_html()}<h2>Conclusion</h2>', 1)
+                content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
             else:
-                content += generate_calculator_html()
+                content += generate_odds_widget_html() + generate_calculator_html()
             
             # --- SEO SCHEMA INJECTION (Groq) ---
             schema_html = generate_game_schema()
@@ -1315,8 +1668,23 @@ def generate_with_groq(prompt, topic, use_ai_images=False):
                 ("Can I withdraw in INR?", "Yes, you can withdraw your winnings via UPI, Paytm, and local bank transfer.")
             ]
             schema_html += generate_faq_schema(faq_pairs)
-            schema_html += generate_review_schema(topic)
+            _author_name = author['name'] if isinstance(author, dict) and 'name' in author else "Saurabh Sharma"
+            schema_html += generate_review_schema(topic, author=_author_name)
+            
+            if 'strateg' in topic.lower() or 'trick' in topic.lower() or 'how to' in topic.lower():
+                steps = [
+                    "Register or log in to your verified 1xBet account.",
+                    "Fund your wallet securely using UPI, Paytm or Bank Transfer.",
+                    "Set your strict session bankroll and stick to it.",
+                    "Choose the game and apply the strategy with minimum bets first to test RNG patterns.",
+                    "Cash out winnings early to minimize risk and avoid chasing losses."
+                ]
+                schema_html += "\n" + generate_howto_schema(topic, steps)
+                
             content += f"\n\n{schema_html}"
+            
+            # --- E-E-A-T AUTHOR INJECTION ---
+            content += generate_author_html(author)
 
             print(f"   ✅ Groq generated content ({len(content)} chars)")
             return topic, content, "groq-llama3.3-70b"
@@ -1393,6 +1761,13 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
             post_id = find_wp_post_id(site_url, login, password, title)
             if not post_id:
                 print(f"⚠️ Could not find exact post ID. Publishing as new.")
+        else:
+            # STEP 1.5: Duplicate Check (Safety Valve)
+            if check_duplicate_slug(site_url, login, password, title):
+                print(f"🛑 Skipping Task {i+1}: Duplicate detected on-site.")
+                if row_id:
+                    update_sheet_status(row_id, "skipped", "Duplicate Detected", "N/A")
+                continue
 
         # STEP 2: Inject Internal Links (SEO)
         print(f"🔗 Fetching recent posts for internal linking...")
@@ -1403,10 +1778,18 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
         else:
             print(f"   ℹ️ No existing posts found for internal linking.")
 
+        # STEP 2.5: Inject Ecosystem Links (Games Income + AstroCrashGame)
+        print(f"   🚀 Injecting SEO Ecosystem cross-links...")
+        content = inject_ecosystem_links(content, topic)
+
         # STEP 2b: Generate & inject FAQ block (5 FAQs + FAQPage JSON-LD schema)
         faq_block = generate_faq_block(topic, target_url, anchor)
         if faq_block:
             content = content + faq_block
+
+        # STEP 2c: Inject Table of Contents (TOC) for UX & SEO Jump Links
+        print(f"   📑 Generating and injecting Table of Contents...")
+        content = inject_toc(content)
 
         print(f"Publishing to {site_url}...")
         
@@ -1454,6 +1837,17 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
                 send_telegram_post(seo_title if 'seo_title' in dir() else topic, link, topic)
                 # 🚀 SEO: Notify Google Indexing API
                 submit_to_google_indexing(link)
+
+                # ⚡ SEO: Trigger IndexNow (Bing, Yandex, etc.)
+                index_now_key = os.getenv("INDEXNOW_API_KEY")
+                if index_now_key and link:
+                    try:
+                        print(f"   ⚡ Triggering IndexNow for {site_url}...")
+                        domain = site_url.replace("https://", "").replace("http://", "").split('/')[0]
+                        idx_client = IndexNowClient(domain, index_now_key)
+                        idx_client.submit_urls([link])
+                    except Exception as e:
+                        print(f"   ⚠️ IndexNow submission failed: {e}")
                 # 🔔 Web Push: Notify OneSignal
                 trigger_onesignal_notification(seo_title if 'seo_title' in dir() else topic, link)
                 # 💬 Auto-Comment: Leave 2 realistic comments with a delay
@@ -1471,6 +1865,12 @@ def run_tasks(data=None, output_file='results.json', rewrite_mode=False, max_tas
                     print(f"   💬 Auto-commenter scheduled in {delay_min} min for: {link}")
                 except Exception as e:
                     print(f"   ⚠️ Auto-commenter failed to start: {e}")
+
+        # Rate limit compliance: configurable pause between tasks
+        rate_limit_delay = int(os.getenv("RATE_LIMIT_DELAY", "65"))  # Default 65s for 6000 tpm / ~5000 tokens per article
+        if i < len(data) - 1 and rate_limit_delay > 0:
+            print(f"⏳ Waiting {rate_limit_delay}s (API rate limit protection)...")
+            time.sleep(rate_limit_delay)
 
         
     with open(output_file, 'w') as f:
@@ -1535,9 +1935,9 @@ def generate_hindi_article(english_topic, english_content, target_url, anchor):
     Translates & rewrites the article in Hindi using Groq.
     Returns (hindi_title, hindi_content).
     """
-    groq_key = os.getenv('GROQ_API_KEY', '')
-    if not groq_key:
-        print("   ⚠️ No GROQ_API_KEY found for Hindi translation")
+    openrouter_key = os.getenv('OPENROUTER_API_KEY', '')
+    if not openrouter_key:
+        print("   ⚠️ No OPENROUTER_API_KEY found for Hindi translation")
         return None, None
 
     hindi_prompt = f"""You are an expert Hindi content writer for Indian gambling/casino audiences.
@@ -1557,25 +1957,24 @@ Return: First line = Hindi title (no markup), then blank line, then full HTML ar
 
     try:
         resp = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
             json={
-                "model": "llama-3.3-70b-versatile",
+                "model": "meta-llama/llama-3.3-70b-instruct",
                 "messages": [{"role": "user", "content": hindi_prompt}],
-                "max_tokens": 4000,
                 "temperature": 0.7
             },
-            timeout=60
+            timeout=90
         )
         if resp.status_code == 200:
             text = resp.json()['choices'][0]['message']['content'].strip()
             lines = text.split('\n', 2)
             hindi_title = lines[0].strip()
             hindi_content = '\n'.join(lines[2:]).strip() if len(lines) > 2 else text
-            print(f"   ✅ Hindi article generated ({len(hindi_content)} chars)")
+            print(f"   ✅ Hindi article generated via OpenRouter ({len(hindi_content)} chars)")
             return hindi_title, hindi_content
         else:
-            print(f"   ❌ Groq Hindi error: {resp.status_code} {resp.text[:200]}")
+            print(f"   ❌ OpenRouter Hindi error: {resp.status_code} {resp.text[:200]}")
             return None, None
     except Exception as e:
         print(f"   ❌ Hindi generation exception: {e}")
