@@ -1,0 +1,274 @@
+.portal-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .portal-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sidebar */
+.portal-sidebar {
+  padding: 24px 0;
+}
+
+.contractor-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  color: white;
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--secondary);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.portal-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 12px;
+}
+
+.portal-nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.portal-nav button:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-main);
+}
+
+.portal-nav button.active {
+  background: rgba(99,102,241,0.1);
+  color: var(--primary);
+}
+
+.badge {
+  background: var(--primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: auto;
+}
+
+/* Main View Header */
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.view-header h2 {
+  font-size: 24px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot.online { background: var(--secondary); box-shadow: 0 0 8px var(--secondary); }
+
+/* Leads List */
+.leads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lead-card {
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+.lead-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99,102,241,0.3);
+}
+
+.lead-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.lead-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.tag-primary { background: rgba(99,102,241,0.15); color: var(--primary); }
+.tag-secondary { background: rgba(16,185,129,0.15); color: var(--secondary); }
+.tag-danger { background: rgba(239,68,68,0.15); color: var(--error); }
+
+.lead-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.lead-body h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.lead-details {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.lead-details strong {
+  color: var(--text-main);
+}
+
+.lead-footer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.btn-return {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.btn-return:hover {
+  color: var(--error);
+}
+
+/* Campaigns View */
+.campaign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.campaign-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.camp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.camp-info span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.camp-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.camp-status.active { color: var(--secondary); }
+.camp-status.warning { color: #f59e0b; }
+
+/* Billing View */
+.wallet-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(16,185,129,0.1));
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 16px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.wallet-bal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wallet-bal span {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.wallet-bal strong {
+  font-size: 36px;
+  color: white;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}

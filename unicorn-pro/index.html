@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unicorn Pro — Тестове завдання PM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-logo">🦄 Unicorn Pro — Тестове завдання PM</div>
+    <div class="nav-links">
+      <a href="#task1" class="nav-link">01 Дослідження</a>
+      <a href="#task2" class="nav-link">02 MVP</a>
+      <a href="#task3" class="nav-link">03 Дашборд</a>
+      <a href="#action" class="nav-link">План дій</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Product Manager Test Assignment</div>
+    <h1 class="hero-title">Home Services<br><span class="gradient-text">Lead Marketplace</span></h1>
+    <p class="hero-sub">Дослідження вертикалей · Дизайн MVP · Аналітика перформансу · $27,635 профіту</p>
+    <div class="hero-metrics">
+      <div class="hero-metric">
+        <div class="hero-metric-value">5,323</div>
+        <div class="hero-metric-label">Лідів проаналізовано</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-value">21.2%</div>
+        <div class="hero-metric-label">Загальний ROI</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-value">$27.6K</div>
+        <div class="hero-metric-label">Місячний прибуток</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-value">5</div>
+        <div class="hero-metric-label">Аномалій знайдено</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASK 1: RESEARCH -->
+  <section class="section" id="task1">
+    <div class="container">
+      <div class="section-tag">Завдання 01</div>
+      <h2 class="section-title">Дослідження вертикалей та рекомендації</h2>
+      <p class="section-sub">Аналіз 8 Home Services вертикалей для пошуку найкращого напрямку масштабування ping-post платформи Unicorn Pro</p>
+
+      <!-- Context note -->
+      <div class="insight-box insight-blue">
+        <div class="insight-icon">🔍</div>
+        <div>
+          <strong>Стартова точка:</strong> Unicorn Pro вже працює у вертикалях <strong>Покрівля (Roofing), Ванні (Bathroom) та Вікна (Windows)</strong>. Нова вертикаль має доповнювати цей портфель — ідеально, якщо вона використовує ту ж саму базу байєрів та канали трафіку.
+        </div>
+      </div>
+
+      <!-- Vertical comparison table -->
+      <div class="card">
+        <h3 class="card-title">Матриця порівняння вертикалей</h3>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Вертикаль</th>
+                <th>Об'єм ринку США</th>
+                <th>Сер. CPL (Google)</th>
+                <th>Ціна Exclusive ліда</th>
+                <th>Ціна Shared ліда</th>
+                <th>Сезонність</th>
+                <th>База байєрів</th>
+                <th>Синергія</th>
+                <th>Оцінка</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="highlight-row">
+                <td><strong>🏆 HVAC</strong></td>
+                <td>$185B</td>
+                <td>$149</td>
+                <td>$80–$250</td>
+                <td>$25–$75</td>
+                <td>Середня (піки)</td>
+                <td>Дуже велика</td>
+                <td>⭐⭐⭐⭐⭐</td>
+                <td><span class="score score-high">9.1/10</span></td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>🥈 Gutters</strong></td>
+                <td>$12B</td>
+                <td>$55–$90</td>
+                <td>$40–$120</td>
+                <td>$15–$45</td>
+                <td>Висока (осінь/весна)</td>
+                <td>Велика</td>
+                <td>⭐⭐⭐⭐⭐</td>
+                <td><span class="score score-high">8.4/10</span></td>
+              </tr>
+              <tr>
+                <td>Solar</td>
+                <td>$48B</td>
+                <td>$150–$300</td>
+                <td>$100–$350</td>
+                <td>$40–$120</td>
+                <td>Низька (весь рік)</td>
+                <td>Середня</td>
+                <td>⭐⭐⭐</td>
+                <td><span class="score score-mid">7.2/10</span></td>
+              </tr>
+              <tr>
+                <td>Plumbing</td>
+                <td>$124B</td>
+                <td>$167</td>
+                <td>$80–$200</td>
+                <td>$25–$80</td>
+                <td>Низька (аварії)</td>
+                <td>Дуже велика</td>
+                <td>⭐⭐⭐</td>
+                <td><span class="score score-mid">6.9/10</span></td>
+              </tr>
+              <tr>
+                <td>Pest Control</td>
+                <td>$25B</td>
+                <td>$45–$90</td>
+                <td>$30–$80</td>
+                <td>$10–$30</td>
+                <td>Висока (літо)</td>
+                <td>Велика</td>
+                <td>⭐⭐</td>
+                <td><span class="score score-low">5.8/10</span></td>
+              </tr>
+              <tr>
+                <td>Siding</td>
+                <td>$14B</td>
+                <td>$80–$150</td>
+                <td>$60–$180</td>
+                <td>$20–$60</td>
+                <td>Середня</td>
+                <td>Середня</td>
+                <td>⭐⭐⭐⭐</td>
+                <td><span class="score score-mid">6.5/10</span></td>
+              </tr>
+              <tr>
+                <td>Foundation Repair</td>
+                <td>$6B</td>
+                <td>$100–$200</td>
+                <td>$80–$300</td>
+                <td>$30–$100</td>
+                <td>Низька</td>
+                <td>Мала</td>
+                <td>⭐⭐</td>
+                <td><span class="score score-low">5.1/10</span></td>
+              </tr>
+              <tr>
+                <td>Moving</td>
+                <td>$86B</td>
+                <td>$30–$70</td>
+                <td>$20–$60</td>
+                <td>$8–$25</td>
+                <td>Висока (літо)</td>
+                <td>Велика</td>
+                <td>⭐</td>
+                <td><span class="score score-low">4.2/10</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          * Фінансові показники (CPL, ціна ліда, маржинальність) та розміри ринків базуються на <strong>актуальних бенчмарках ринку США</strong> (Angi, Thumbtack) для лідогенерації в ніші Home Services.<br>
+          Синергія = Сумісність із існуючою базою покупців (контрактори Roofing/Windows/Bathroom). Оцінка базується на: юніт-економіці (40%), синергії байєрів (30%), об'ємі ринку (20%), ризиках впровадження (10%).
+        </p>
+      </div>
+
+      <!-- Winners -->
+      <div class="two-col">
+        <!-- HVAC -->
+        <div class="card winner-card">
+          <div class="winner-badge">🏆 Вибір #1</div>
+          <h3 class="card-title">HVAC (Опалення та кондиціонування)</h3>
+          <p class="card-desc">Heating, Ventilation & Air Conditioning</p>
+
+          <div class="metrics-row">
+            <div class="mini-metric">
+              <span class="mini-val">$185B</span>
+              <span class="mini-label">Ринок США</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-val">~$45</span>
+              <span class="mini-label">Наш таргет CPL</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-val">$80–$150</span>
+              <span class="mini-label">Ціна Exclusive ліда</span>
+            </div>
+          </div>
+
+          <div class="unit-econ-block">
+            <div class="ue-title">Модель юніт-економіки</div>
+            <div class="ue-row"><span>CPL (Facebook/Native)</span><span class="ue-cost">$42</span></div>
+            <div class="ue-row"><span>Exclusive ставка (1 байєр)</span><span class="ue-rev">$120</span></div>
+            <div class="ue-row ue-total"><span>Валова маржа / лід</span><span class="ue-profit">+$78 (185%)</span></div>
+            <div class="ue-row ue-alt"><span>Shared (3 байєри × $45)</span><span class="ue-rev">$135</span></div>
+            <div class="ue-row ue-total"><span>Shared маржа / лід</span><span class="ue-profit">+$93 (221%)</span></div>
+          </div>
+
+          <div class="reasons">
+            <div class="reason">⚡ Аварійний ремонт = миттєвий високий намір (без фази дослідження)</div>
+            <div class="reason">🔁 Покупці лідів на Покрівлю часто мають ліцензії HVAC — спільна база байєрів</div>
+            <div class="reason">📈 Високий чек ($4K–$15K) → контрактори платять преміум-ціну за лід</div>
+            <div class="reason">🗓 Цілорічний попит із літніми (кондиціонер) та зимовими (опалення) піками</div>
+          </div>
+
+          <div class="channel-plan">
+            <div class="channel-title">Як будемо просувати</div>
+            <div class="channel-item"><span class="ch-tag">Meta</span>Багатокроковий квіз: "Вашому кондиціонеру більше 10 років?" → креативи з фокусом на терміновість</div>
+            <div class="channel-item"><span class="ch-tag">Google LSA</span>Екстрені ключові слова: "Ремонт AC поруч" — найвищий намір</div>
+            <div class="channel-item"><span class="ch-tag">Native</span>Сезонний контент: "5 ознак, що ваш HVAC час міняти" → низький CPL</div>
+          </div>
+        </div>
+
+        <!-- Gutters -->
+        <div class="card winner-card">
+          <div class="winner-badge">🥈 Вибір #2</div>
+          <h3 class="card-title">Gutters (Водостоки)</h3>
+          <p class="card-desc">Встановлення, очищення та ремонт водостоків</p>
+
+          <div class="metrics-row">
+            <div class="mini-metric">
+              <span class="mini-val">$12B</span>
+              <span class="mini-label">Ринок США</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-val">~$22</span>
+              <span class="mini-label">Наш таргет CPL</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-val">$40–$100</span>
+              <span class="mini-label">Ціна Exclusive ліда</span>
+            </div>
+          </div>
+
+          <div class="unit-econ-block">
+            <div class="ue-title">Модель юніт-економіки</div>
+            <div class="ue-row"><span>CPL (Facebook/Native)</span><span class="ue-cost">$22</span></div>
+            <div class="ue-row"><span>Exclusive ставка (1 байєр)</span><span class="ue-rev">$65</span></div>
+            <div class="ue-row ue-total"><span>Валова маржа / лід</span><span class="ue-profit">+$43 (195%)</span></div>
+            <div class="ue-row ue-alt"><span>Shared (3 байєри × $28)</span><span class="ue-rev">$84</span></div>
+            <div class="ue-row ue-total"><span>Shared маржа / лід</span><span class="ue-profit">+$62 (282%)</span></div>
+          </div>
+
+          <div class="reasons">
+            <div class="reason">🏠 90%+ покрівельних компаній також займаються водостоками — залучення нових байєрів не потрібне</div>
+            <div class="reason">💰 Найнижчий CPL у списку: великі обсяги, легко пояснити домовласникам</div>
+            <div class="reason">🍂 Осінній пік: 60% річного доходу припадає на вер-лис (прогнозоване масштабування)</div>
+            <div class="reason">♻️ Та сама воронка, що й для Roofing — перевикористання креативів та логіки квізів</div>
+          </div>
+
+          <div class="channel-plan">
+            <div class="channel-title">Як будемо просувати</div>
+            <div class="channel-item"><span class="ch-tag">Meta</span>Сезонний пуш: "Осінь прийшла — чи готові ваші водостоки?" + фото до/після</div>
+            <div class="channel-item"><span class="ch-tag">Native</span>Круглорічні статті-списки: "Вартість очищення водостоків vs заміна даху"</div>
+            <div class="channel-item"><span class="ch-tag">Крос-сейл</span>Додати запитання про водостоки в існуючу воронку Roofing — нульовий CPL</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitors -->
+      <div class="card">
+        <h3 class="card-title">Аналіз конкурентів</h3>
+        <div class="competitors-grid">
+          <div class="competitor-card">
+            <div class="comp-header">
+              <div class="comp-logo angi-logo">Angi</div>
+              <div class="comp-type">Маркетплейс</div>
+            </div>
+            <div class="comp-section">
+              <div class="comp-label">Їхня воронка (live, липень 2026)</div>
+              <div class="comp-text">Next.js + Mixpanel + Snowplow — трекінг кожного кроку. Поисковий рядок → вибір категорії → квіз (4–6 питань: тип послуги, zip, контакти) → TCPA-згода → лід до 5–8 контракторів. <strong>Нема Self-Serve балансу</strong> — реєстрація лише через менеджера. Слоган: "1.5M+ opportunities last month".</div>
+            </div>
+            <div class="two-mini-col">
+              <div>
+                <div class="comp-label green-label">✅ Беремо собі</div>
+                <ul class="comp-list">
+                  <li>Прогрес-бар у квізі (знижує відмови на ~18%)</li>
+                  <li>Популярні категорії з іконками на хомпейджі</li>
+                  <li>Безкоштовна реєстрація для контракторів</li>
+                </ul>
+              </div>
+              <div>
+                <div class="comp-label red-label">❌ Уникаємо помилок</div>
+                <ul class="comp-list">
+                  <li>Продаж 5–8 компаніям = вигоряння лідів, шквал дзвінків клієнту</li>
+                  <li>Фіксована ціна → гроші залишаються на столі</li>
+                  <li>Return Rate 20–40% через слабку валідацію</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="competitor-card">
+            <div class="comp-header">
+              <div class="comp-logo mod-logo">Modernize</div>
+                <ul class="comp-list">
+                  <li>Глибока кваліфікація = нижчий Return Rate (~8% проти 25%+ у Angi)</li>
+                  <li>Інтеграція TrustedForm для кожного ліда (TCPA compliance)</li>
+                  <li>Портал контрактора з детальною історією лідів та CRM-нотатками</li>
+                </ul>
+              </div>
+              <div>
+                <div class="comp-label red-label">❌ Уникаємо помилок</div>
+                <ul class="comp-list">
+                  <li>Фіксований прайс = неможливість динамічно оптимізувати дохід з ліда</li>
+                  <li>Довгий квіз = великий відсоток відмов на 6–8 кроці</li>
+                  <li>Немає доставки в реальному часі — ліди відправляються пачками щогодини</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="competitor-card">
+            <div class="comp-header">
+              <div class="comp-logo networx-logo">Networx</div>
+              <div class="comp-type">Лідогенерація</div>
+            </div>
+            <div class="comp-section">
+              <div class="comp-label">Їхня воронка</div>
+              <div class="comp-text">Схожа на Angi. Коротка форма, швидка доставка, низька ціна. Фокус на менших ринках. Немає опції Exclusive. Інтегровані відгуки про контракторів.</div>
+            </div>
+            <div class="two-mini-col">
+              <div>
+                <div class="comp-label green-label">✅ Беремо собі</div>
+                <ul class="comp-list">
+                  <li>Система відгуків викликає довіру у домовласників (показується у квізі)</li>
+                  <li>Простий мобільний UX форми</li>
+                </ul>
+              </div>
+              <div>
+                <div class="comp-label red-label">❌ Уникаємо помилок</div>
+                <ul class="comp-list">
+                  <li>Немає Exclusive продукту = демпінг і конкуренція за ціною</li>
+                  <li>Відсутність валідації номерів телефонів → bad_number return rate ~15%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-box insight-green" style="margin-top: 24px;">
+          <div class="insight-icon">💡</div>
+          <div><strong>Наша перевага:</strong> Модель ping-post забезпечує відкриття цін у реальному часі (real-time price discovery), чого немає у конкурентів. Поєднання глибини кваліфікації Modernize з обсягами Angi та шаром динамічного аукціону дає нам структурно кращу юніт-економіку, ніж у будь-якого іншого конкурента.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASK 2: MVP -->
+  <section class="section section-dark" id="task2">
+    <div class="container">
+      <div class="section-tag">Завдання 02</div>
+      <h2 class="section-title">Дизайн MVP платформи</h2>
+      <p class="section-sub">Lead Marketplace · Вертикаль HVAC · Release 1 — що входить, що свідомо відкладаємо і чому</p>
+
+      <!-- Scope table -->
+      <div class="card dark-card">
+        <h3 class="card-title">Скоуп MVP (Release 1 vs Backlog)</h3>
+        <div class="scope-grid">
+          <div class="scope-col">
+            <div class="scope-header in-scope">✅ Release 1 — Обов'язково</div>
+            <div class="scope-item"><span class="scope-tag s-fe">FE</span> B2C квіз-воронка (5 кроків)</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> Валідація телефону Twilio Lookup</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> TrustedForm TCPA-сертифікат</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> Ping-Post аукціонний рушій</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> Логіка Exclusive vs Shared</div>
+            <div class="scope-item"><span class="scope-tag s-fe">FE</span> Self-Serve портал байєра (4 екрани)</div>
+            <div class="scope-item"><span class="scope-tag s-fe">FE</span> Інбокс лідів + кнопка Return</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> Stripe Prepaid Wallet (баланс)</div>
+            <div class="scope-item"><span class="scope-tag s-fe">FE</span> Базовий дашборд аналітики</div>
+            <div class="scope-item"><span class="scope-tag s-be">BE</span> Telegram-бот алертів (Fill Rate < 70%)</div>
+          </div>
+          <div class="scope-col">
+            <div class="scope-header out-scope">⏳ Backlog — Свідомо відкладаємо</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R2</span> Мобільний Push-додаток для контракторів</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R2</span> Вбудована CRM / pipeline трекінг</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R2</span> Автоматичний IVR / передзвін</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R2</span> Рейтинги та відгуки контракторів</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R3</span> AI-скоринг лідів (ML-модель)</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R3</span> Портал для паблішерів / афіліатів</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R3</span> API-доступ для enterprise-байєрів</div>
+            <div class="scope-item deferred"><span class="scope-tag s-def">R3</span> Мульти-вертикальний дашборд</div>
+          </div>
+        </div>
+        <div class="insight-box insight-yellow" style="margin-top: 20px;">
+          <div class="insight-icon">🎯</div>
+          <div><strong>Логіка скоупінгу:</strong> Release 1 закриває повний loop "лід прийнятий → розподілений → доставлений → оплачений". Все інше — growth features, які не блокують перший дохід. Відкладаємо мобільний додаток, бо Web Push достатній для Speed-to-Lead на MVP; CRM — бо достатньо кнопки Return; AI-скоринг — бо потрібно накопичити мінімум 10K лідів для навчання моделі.</div>
+        </div>
+      </div>
+
+      <!-- FRONTEND SECTION -->
+      <div class="card dark-card">
+        <h3 class="card-title">🖥 Frontend — Ключові екрани та флоу</h3>
+
+        <div class="flows-grid">
+          <!-- B2C Funnel Wireframe -->
+          <div class="flow-block">
+            <div class="flow-tag b2c-tag">B2C — Воронка домовласника (5 кроків)</div>
+            <div class="wireframe-note">Груба логіка екранів / Wireframe-рівень</div>
+
+            <div class="funnel-steps">
+              <div class="funnel-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-title">Тип послуги</div>
+                  <div class="step-desc">Hero + питання: "З чим потрібна допомога?" <br>Tile-вибір: Ремонт AC · Заміна системи · Нова установка · Чистка / ТО<br><span class="step-note">UX-рішення: tile-кнопки (не dropdown) → знижують friction, мобільний First</span></div>
+                </div>
+              </div>
+              <div class="funnel-arrow">↓</div>
+              <div class="funnel-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-title">Деталі нерухомості</div>
+                  <div class="step-desc">ZIP-код → автодетект міста<br>Тип: Будинок / Квартира / Комерція<br>Статус: Власник (Так / Ні)<br><span class="step-note">Якщо "Ні" → soft exit ("Попросіть власника") — не збираємо неякісний лід</span></div>
+                </div>
+              </div>
+              <div class="funnel-arrow">↓</div>
+              <div class="funnel-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-title">Специфіка проекту</div>
+                  <div class="step-desc">Вік системи (варіанти) · Бренд AC (необов'язково)<br>Терміновість: 🚨 Аварія (сьогодні) · 📅 Цього тижня · 🗓 Планую<br><span class="step-note">Терміновість → ключовий сигнал для роутера: "Аварія" = Exclusive-пріоритет</span></div>
+                </div>
+              </div>
+              <div class="funnel-arrow">↓</div>
+              <div class="funnel-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <div class="step-title">Контактна форма</div>
+                  <div class="step-desc">Ім'я · Телефон (Twilio OTP валідація) · Email<br>TCPA-чекбокс із динамічним текстом (TrustedForm запис)<br><span class="step-note">OTP — не обов'язковий, але Twilio Lookup (синхронний) блокує VoIP/одноразові номери</span></div>
+                </div>
+              </div>
+              <div class="funnel-arrow">↓</div>
+              <div class="funnel-step step-final">
+                <div class="step-num">✓</div>
+                <div class="step-content">
+                  <div class="step-title">Thank You Page</div>
+                  <div class="step-desc">"Ваша заявка прийнята! З вами зв'яжуться протягом 15 хв"<br>Показ аватарів / логотипів знайдених контракторів<br><span class="step-note">Якщо не продано → "Ми шукаємо підрядника у вашому регіоні, очікуйте дзвінок"</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress bar mockup -->
+            <div class="progress-mockup">
+              <div class="pm-label">Прогрес-бар (позичаємо у Angi — знижує відмови на ~18%)</div>
+              <div class="pm-bar">
+                <div class="pm-fill" style="width: 60%"></div>
+              </div>
+              <div class="pm-steps">
+                <span class="pm-s done">Послуга</span>
+                <span class="pm-s done">Адреса</span>
+                <span class="pm-s done">Деталі</span>
+                <span class="pm-s active">Контакт</span>
+                <span class="pm-s">Готово</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- B2B Portal Screens -->
+          <div class="flow-block">
+            <div class="flow-tag b2b-tag">B2B — Self-Serve Портал байєра (4 екрани)</div>
+            <div class="wireframe-note">Структура екранів / навігація</div>
+
+            <div class="screens-list">
+              <div class="screen-item">
+                <div class="screen-icon">📋</div>
+                <div class="screen-content">
+                  <div class="screen-name">1. Онбординг (одноразово)</div>
+                  <div class="screen-desc">Назва компанії → завантаження ліцензії (PDF) → список ZIP-кодів обслуговування → підключення Stripe → вибір типу кампанії (Excl/Shared)</div>
+                  <div class="screen-ux">⏱ Ціль: менше 5 хвилин до першого ліда</div>
+                </div>
+              </div>
+              <div class="screen-item">
+                <div class="screen-icon">⚙️</div>
+                <div class="screen-content">
+                  <div class="screen-name">2. Кампанії</div>
+                  <div class="screen-desc">Вертикаль → Гео (ZIP/штат) → Тип лідів (Excl/Shared) → Max Bid ($) → Добовий ліміт лідів → Стан: Активна / Пауза</div>
+                  <div class="screen-ux">💡 Можна мати кілька кампаній: напр. Exclusive для Маямі + Shared для всієї Флориди</div>
+                </div>
+              </div>
+              <div class="screen-item">
+                <div class="screen-icon">📬</div>
+                <div class="screen-content">
+                  <div class="screen-name">3. Інбокс лідів</div>
+                  <div class="screen-desc">Real-time стрічка. Картка ліда: ім'я, тип роботи, терміновість, ZIP, час. Контакти приховані до відкриття. Кнопка "Return" → dropdown: причини (Wrong number / Already scheduled / Fake / Out of area)</div>
+                  <div class="screen-ux">🔔 Web Push + SMS-сповіщення при новому ліді (Speed-to-Lead)</div>
+                </div>
+              </div>
+              <div class="screen-item">
+                <div class="screen-icon">💳</div>
+                <div class="screen-content">
+                  <div class="screen-name">4. Гаманець (Billing)</div>
+                  <div class="screen-desc">Поточний баланс · Автопоповнення (пороговий тригер) · Історія транзакцій · Завантаження інвойсів PDF</div>
+                  <div class="screen-ux">⚠️ Якщо баланс < 2× max_bid → автосповіщення + пауза кампанії</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="feature-highlight">
+              <div class="fh-title">🚀 Маркетингові фічі — що запозичуємо і що своє</div>
+              <div class="fh-list">
+                <div class="fh-item"><span class="fh-source">← Networx</span> <strong>Social Proof в hero</strong> — рейтинг Trustpilot + кількість контракторів зараз онлайн</div>
+                <div class="fh-item"><span class="fh-source">← Angi</span> <strong>Прогрес-бар у квізі</strong> — відчуття близькості до кінця (знижує відмови ~18%)</div>
+                <div class="fh-item"><span class="fh-source">← Modernize</span> <strong>Контент-SEO воронка</strong> — статті типу "Скільки коштує ремонт AC у вашому штаті?" з CTA всередині</div>
+                <div class="fh-item"><span class="fh-source">← Наше</span> <strong>Real-Time ROI у порталі</strong> — показуємо контрактору його ROI vs. середній по платформі. Retention tool.</div>
+                <div class="fh-item"><span class="fh-source">← Наше</span> <strong>Urgency badge на Thank You</strong> — "🔥 3 контрактори вже отримали вашу заявку і можуть подзвонити зараз"</div>
+                <div class="fh-item"><span class="fh-source">← Наше</span> <strong>Bid Transparency</strong> — байєр бачить свій поточний bid відносно ринкового (без розкриття чужих ставок)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACKEND SECTION -->
+      <div class="card dark-card">
+        <h3 class="card-title">⚙️ Backend — Ping-Post: Шлях ліда від заявки до доставки</h3>
+
+        <div class="pingpost-diagram" id="pingpost">
+          <div class="pp-stage" id="pp1">
+            <div class="pp-icon">📝</div>
+            <div class="pp-label">Submit (крок 4 форми)</div>
+            <div class="pp-sub">POST /leads · TrustedForm cert_id</div>
+          </div>
+          <div class="pp-arrow" id="ppa1">
+            <div class="pp-arrow-line"></div>
+            <div class="pp-arrow-label">Validate<br>~200ms</div>
+          </div>
+          <div class="pp-stage" id="pp2">
+            <div class="pp-icon">🔍</div>
+            <div class="pp-label">Дедуп + Валідація</div>
+            <div class="pp-sub">Twilio Lookup · Дублі за 30 днів · Власник?</div>
+          </div>
+          <div class="pp-arrow" id="ppa2">
+            <div class="pp-arrow-line"></div>
+            <div class="pp-arrow-label">PING<br>1–2 sec</div>
+          </div>
+          <div class="pp-stage" id="pp3">
+            <div class="pp-icon">📡</div>
+            <div class="pp-label">Ping → Байєри</div>
+            <div class="pp-sub">Анонімні дані (без контактів) · Паралельно до всіх matched buyers</div>
+          </div>
+          <div class="pp-arrow" id="ppa3">
+            <div class="pp-arrow-line"></div>
+            <div class="pp-arrow-label">Auction<br>2–3 sec</div>
+          </div>
+          <div class="pp-stage" id="pp4">
+            <div class="pp-icon">⚡</div>
+            <div class="pp-label">Auction Close</div>
+            <div class="pp-sub">Збір бідів · Excl vs Shared Decision · Floor check</div>
+          </div>
+          <div class="pp-arrow" id="ppa4">
+            <div class="pp-arrow-line"></div>
+            <div class="pp-arrow-label">POST<br>~50ms</div>
+          </div>
+          <div class="pp-stage" id="pp5">
+            <div class="pp-icon">✅</div>
+            <div class="pp-label">Delivered</div>
+            <div class="pp-sub">Контакти відкриті · Баланс списано · Thank You показано</div>
+          </div>
+        </div>
+
+        <!-- Decision Tree -->
+        <div class="routing-section">
+          <h4 class="routing-title">Логіка роутингу — Decision Tree (крок за кроком)</h4>
+          <div class="decision-tree">
+            <div class="dt-node dt-root">
+              <div class="dt-q">Аукціон закрито. Які ставки надійшли?</div>
+            </div>
+            <div class="dt-branches">
+              <div class="dt-branch">
+                <div class="dt-condition">Є хоча б 1 Exclusive-бід AND<br>Exclusive_bid > Σ top3_shared × quality_factor</div>
+                <div class="dt-node dt-excl">
+                  <div class="dt-result">🎯 EXCLUSIVE</div>
+                  <div class="dt-detail">1 байєр · Контакти відкрито · Баланс mіnus exclusive_bid · Push + SMS байєру</div>
+                </div>
+              </div>
+              <div class="dt-branch">
+                <div class="dt-condition">Exclusive-бідів немає або недостатній.<br>Є 2–3 Shared-байєри вище floor_price</div>
+                <div class="dt-node dt-shared">
+                  <div class="dt-result">👥 SHARED (макс. 3)</div>
+                  <div class="dt-detail">Кожен байєр платить свій bid · Вибираємо top-3 за bid · quality_factor = (1 - hist_return_rate_buyer)</div>
+                </div>
+              </div>
+              <div class="dt-branch">
+                <div class="dt-condition">Всі ставки нижче floor_price<br>або взагалі немає байєрів у ZIP</div>
+                <div class="dt-node dt-unsold">
+                  <div class="dt-result">⚪ UNSOLD</div>
+                  <div class="dt-detail">Лід зберігається 24 год · Telegram-алерт якщо unsold_geo > 15% · Авто-пауза трафіку на ZIP</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dt-note">
+              <strong>quality_factor</strong> — коригування ставки на основі історичного Return Rate байєра. Байєр з 25% return_rate отримує weight 0.75 → поступається байєру з 5% return_rate навіть при вищому nominal bid. Запобігає нагромадженню "toxic buyers".
+            </div>
+          </div>
+
+          <div class="routing-grid">
+            <div class="routing-card exclusive">
+              <div class="routing-header">🎯 Exclusive — коли краще</div>
+              <div class="routing-details">
+                <div>• Терміновість "Аварія" → buyer pay premium</div>
+                <div>• ZIP з низькою bid density (1–2 buyer) → примусовий Excl</div>
+                <div>• Ціна Exclusive: $80–$150 HVAC (vs Shared $35–$55)</div>
+                <div>• Конверсія для контрактора: 3–5× вища (без конкуренції)</div>
+              </div>
+            </div>
+            <div class="routing-card shared">
+              <div class="routing-header">👥 Shared — коли краще</div>
+              <div class="routing-details">
+                <div>• Терміновість "Планую" → менший premium, конкуренція ок</div>
+                <div>• ZIP з bid density 4+ buyers → Shared дає більший Σ revenue</div>
+                <div>• Максимум 3 байєри (не 8! — наша диференціація від Angi)</div>
+                <div>• Revenue per Lead: Σ top3_shared bids > Exclusive_single_bid</div>
+              </div>
+            </div>
+            <div class="routing-card no-sale">
+              <div class="routing-header">⚪ Unsold — що робимо</div>
+              <div class="routing-details">
+                <div>• Лід зберігається 24 год у "cold pool"</div>
+                <div>• Алерт команді: "ZIP 33101 — unsold_rate 22% за 24 год"</div>
+                <div>• Авто-зниження floor_price на 10% після 2 год unsold</div>
+                <div>• Авто-пауза Facebook/Native трафіку на ZIP якщо unsold > 15%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Metrics -->
+        <div class="analytics-section">
+          <h4 class="routing-title">📊 Аналітика — Метрики для управління платформою</h4>
+          <div class="analytics-note">Ці метрики мають бути в реальному часі (Redis counters) і показані у внутрішньому дашборді. Кожна — з тригером і відповідальною дією.</div>
+
+          <div class="metrics-table-wrap">
+            <table class="metrics-table">
+              <thead>
+                <tr>
+                  <th>Метрика</th>
+                  <th>Як рахується</th>
+                  <th>Ціль (MVP)</th>
+                  <th>Тригер → Дія</th>
+                  <th>Управляє чим</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Fill Rate</strong></td>
+                  <td>sold / total × 100</td>
+                  <td><span class="badge-good">&gt; 85%</span></td>
+                  <td>&lt;70% за 1 год → Telegram-алерт + перевірка buyer coverage</td>
+                  <td>Баланс попит/пропозиція</td>
+                </tr>
+                <tr>
+                  <td><strong>ARPL</strong></td>
+                  <td>revenue / sold_leads</td>
+                  <td><span class="badge-good">$50+ HVAC</span></td>
+                  <td>Падіння 15% WoW → аудит floor_price та bid density</td>
+                  <td>Цінова стратегія</td>
+                </tr>
+                <tr>
+                  <td><strong>Return Rate</strong></td>
+                  <td>returned / (sold + returned)</td>
+                  <td><span class="badge-mid">&lt; 12%</span></td>
+                  <td>&gt;20% по джерелу → авто-пауза трафіку з цього каналу</td>
+                  <td>Якість трафіку</td>
+                </tr>
+                <tr>
+                  <td><strong>Bid Density</strong></td>
+                  <td>avg bids per ping (по ZIP)</td>
+                  <td><span class="badge-good">&gt; 3</span></td>
+                  <td>&lt;1.5 по ZIP → сигнал Sales: "потрібен новий buyer у регіоні"</td>
+                  <td>Покриття байєрів</td>
+                </tr>
+                <tr>
+                  <td><strong>Ping-to-Post Rate</strong></td>
+                  <td>posts / pings × 100</td>
+                  <td><span class="badge-good">&gt; 80%</span></td>
+                  <td>&lt;60% → аудит floor_price (занадто висока) або buyer budgets</td>
+                  <td>Ефективність аукціону</td>
+                </tr>
+                <tr>
+                  <td><strong>Speed-to-Lead</strong></td>
+                  <td>час між submit → перший дзвінок байєра</td>
+                  <td><span class="badge-good">&lt; 5 хв</span></td>
+                  <td>&gt;15 хв у середньому → аудит Push/SMS delivery, buyer реакція</td>
+                  <td>Якість для домовласника</td>
+                </tr>
+                <tr>
+                  <td><strong>Buyer Churn Rate</strong></td>
+                  <td>байєри що зупинили кампанії / всього</td>
+                  <td><span class="badge-mid">&lt; 5% / місяць</span></td>
+                  <td>&gt;10% → exit interview + ROI-аналіз для сегменту</td>
+                  <td>Утримання (Retention)</td>
+                </tr>
+                <tr>
+                  <td><strong>Contribution Margin</strong></td>
+                  <td>revenue − CPL − ops_cost</td>
+                  <td><span class="badge-good">&gt; 30%</span></td>
+                  <td>Падіння нижче 15% → перегляд mix джерел трафіку</td>
+                  <td>Чиста прибутковість</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TASK 3: DASHBOARD -->
+  <section class="section" id="task3">
+    <div class="container">
+      <div class="section-tag">Завдання 03</div>
+      <h2 class="section-title">Дашборд перформансу</h2>
+      <p class="section-sub">Червень 2026 · 5,323 лідів · Аналіз на основі наданих сирих даних Unicorn Pro</p>
+
+      <!-- KPI Row -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Всього лідів</div>
+          <div class="kpi-value">5,323</div>
+          <div class="kpi-sub">Sold: 4,305 · Ret: 558 · Unsold: 460</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Загальні витрати (CPL)</div>
+          <div class="kpi-value">$130.6K</div>
+          <div class="kpi-sub">Сер. CPL: $24.54</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Загальний дохід</div>
+          <div class="kpi-value">$158.3K</div>
+          <div class="kpi-sub">Сер. Sold Price: $36.76</div>
+        </div>
+        <div class="kpi-card kpi-profit">
+          <div class="kpi-label">Чистий прибуток</div>
+          <div class="kpi-value kpi-profit-val">$27.6K</div>
+          <div class="kpi-sub">ROI: 21.2%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Fill Rate</div>
+          <div class="kpi-value">80.9%</div>
+          <div class="kpi-sub">Return Rate: 11.5%</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Прибуток за джерелом трафіку</div>
+          <div class="chart-subtitle">ROI: Native 61.3% · Facebook 27.9% · Google -3.3%</div>
+          <canvas id="sourceChart" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Перформанс за вертикалями</div>
+          <div class="chart-subtitle">Дохід vs Витрати vs Прибуток</div>
+          <canvas id="verticalChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">ROI за днями тижня</div>
+          <div class="chart-subtitle">Вихідні просідають — можливість оптимізації бюджетів</div>
+          <canvas id="dayChart" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Порівняння ROI байєрів</div>
+          <div class="chart-subtitle">BuyerC — аномалія з 87.2% ROI, пріоритет на масштабування</div>
+          <canvas id="buyerChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Return reasons -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Причини повернення (Return Reasons)</div>
+          <div class="chart-subtitle">$4,574 втрачено на 'no answer' → виправляється швидшою доставкою</div>
+          <canvas id="returnChart" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Географія — Прибуток vs Unsold Rate</div>
+          <div class="chart-subtitle">Штати MT, ID, ND, WY генерують збитки (Unsold 29–37%)</div>
+          <div class="geo-table-wrap">
+            <table class="geo-table" id="geoTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTION PLAN -->
+  <section class="section section-dark" id="action">
+    <div class="container">
+      <div class="section-tag">План дій</div>
+      <h2 class="section-title">Strategic Action Plan (Аномалії)</h2>
+      <p class="section-sub">Знайдено 5 ключових аномалій. Оціночний потенціал збереження маржі: <span class="highlight-text">$14,000+ на місяць</span></p>
+
+      <div class="anomalies-list">
+
+        <div class="anomaly-card anomaly-cut">
+          <div class="anomaly-header">
+            <div class="anomaly-num">01</div>
+            <div class="anomaly-title">Google Ads: $1,349 Щомісячного збитку</div>
+            <div class="anomaly-action">🔴 CUT (ВИМКНУТИ)</div>
+          </div>
+          <div class="anomaly-body">
+            <div class="anomaly-data">
+              <div class="ad-row"><span>Джерело трафіку</span><strong>Google (g_01, g_02, g_03)</strong></div>
+              <div class="ad-row"><span>Витрати (Spend)</span><strong>$41,424</strong></div>
+              <div class="ad-row"><span>Дохід (Revenue)</span><strong>$40,075</strong></div>
+              <div class="ad-row ad-loss"><span>Прибуток (Profit)</span><strong>-$1,349</strong></div>
+              <div class="ad-row"><span>ROI</span><strong>-3.3%</strong></div>
+            </div>
+            <div class="anomaly-insight">
+              <div class="ai-title">Причина (Root Cause)</div>
+              <div class="ai-text">CPL в Google ($30.8 в середньому) перевищує суму, яку байєри готові платити за лід, особливо у вертикалі Windows. Кампанії g_01, g_02, g_03 є структурно збитковими — це не проблема оптимізації ставок.</div>
+              <div class="ai-action">
+                <strong>Дія:</strong> Негайно поставити на паузу кампанії g_01, g_02, g_03. Залишити g_04 (ROI +2.8%) під наглядом. Перенаправити $30K бюджету на Native-трафік. Імпакт: збереження ~$8K/місяць.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anomaly-card anomaly-scale">
+          <div class="anomaly-header">
+            <div class="anomaly-num">02</div>
+            <div class="anomaly-title">Native-трафік: Золота жила з 61.3% ROI</div>
+            <div class="anomaly-action">🟢 SCALE (МАСШТАБУВАТИ)</div>
+          </div>
+          <div class="anomaly-body">
+            <div class="anomaly-data">
+              <div class="ad-row"><span>Джерело трафіку</span><strong>Native (nt_01, nt_02)</strong></div>
+              <div class="ad-row"><span>Витрати</span><strong>$12,271</strong></div>
+              <div class="ad-row"><span>Дохід</span><strong>$19,797</strong></div>
+              <div class="ad-row ad-win"><span>Прибуток</span><strong>+$7,525</strong></div>
+              <div class="ad-row ad-win"><span>ROI</span><strong>+61.3%</strong></div>
+            </div>
+            <div class="anomaly-insight">
+              <div class="ai-title">Можливість (Opportunity)</div>
+              <div class="ai-text">Native генерує в 6 разів кращий ROI, ніж Google, при третині витрат. Це вказує на те, що Native-аудиторія має вищий намір (контекст редакційних статей працює як прекваліфікатор). Наразі бюджет штучно обмежений.</div>
+              <div class="ai-action">
+                <strong>Дія:</strong> Збільшити ставки на Native на +40–60%. Запустити тести нових паблішерів (слоти nt_03, nt_04). Жорсткий контроль якості: зупиняти будь-який sub-id з Return Rate >14%. Імпакт: +$4.5K/місяць при збільшенні об'єму на 50%.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anomaly-card anomaly-cut">
+          <div class="anomaly-header">
+            <div class="anomaly-num">03</div>
+            <div class="anomaly-title">Мертві зони: MT, ID, ND — 34–37% Unsold Rate</div>
+            <div class="anomaly-action">🔴 CUT (ВИКЛЮЧИТИ ГЕО)</div>
+          </div>
+          <div class="anomaly-body">
+            <div class="anomaly-data">
+              <div class="ad-row"><span>Штати</span><strong>MT, ID, ND (+WY)</strong></div>
+              <div class="ad-row"><span>Сумарні витрати</span><strong>$6,915</strong></div>
+              <div class="ad-row"><span>Сумарний дохід</span><strong>$5,294</strong></div>
+              <div class="ad-row ad-loss"><span>Сумарний збиток</span><strong>-$1,621</strong></div>
+              <div class="ad-row"><span>Unsold Rate</span><strong>34–37%</strong></div>
+            </div>
+            <div class="anomaly-insight">
+              <div class="ai-title">Причина (Root Cause)</div>
+              <div class="ai-text">У цих штатах немає активних байєрів (контракторів), які роблять ставки. Ми генеруємо пропозицію (трафік) там, де немає попиту. Правило платформи: якщо гео має unsold rate >20% протягом 48 год, трафік має ставитись на паузу автоматично.</div>
+              <div class="ai-action">
+                <strong>Дія:</strong> Додати MT, ID, ND, WY у винятки (geo exclusions) у всіх рекламних кабінетах СЬОГОДНІ. Впровадити правило: перед запуском нового штату переконатися, що є ≥2 активних контрактори з поповненим балансом. Імпакт: +$1.6K/місяць.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anomaly-card anomaly-optimize">
+          <div class="anomaly-header">
+            <div class="anomaly-num">04</div>
+            <div class="anomaly-title">BuyerC: 87% ROI Аномалія — Недоотриманий прибуток</div>
+            <div class="anomaly-action">🟡 OPTIMIZE (ОПТИМІЗУВАТИ)</div>
+          </div>
+          <div class="anomaly-body">
+            <div class="anomaly-data">
+              <div class="ad-row"><span>Покупець (Байєр)</span><strong>BuyerC</strong></div>
+              <div class="ad-row"><span>Викуплено лідів</span><strong>443</strong></div>
+              <div class="ad-row"><span>Дохід від байєра</span><strong>$20,476</strong></div>
+              <div class="ad-row ad-win"><span>Наш прибуток</span><strong>+$9,540</strong></div>
+              <div class="ad-row ad-win"><span>ROI</span><strong>+87.2%</strong></div>
+            </div>
+            <div class="anomaly-insight">
+              <div class="ai-title">Можливість (Opportunity)</div>
+              <div class="ai-text">BuyerC приносить в 3 рази більше прибутку на лід, ніж BuyerD. Це означає, що їхні ставки значно вищі за ринок. Але обсяги малі — ймовірно, вони або впираються в свій денний ліміт (Cap), або ми не закупаємо трафік у їхніх цільових гео.</div>
+              <div class="ai-action">
+                <strong>Дія:</strong> (1) Подзвонити BuyerC — обговорити збільшення лімітів (Cap). (2) Зробити вивантаження: в яких гео/вертикалях вони купують → сфокусувати закупівлю трафіку саме там. (3) Оновити логіку маршрутизації: дати BuyerC пріоритет. Імпакт: +$3K+/місяць при подвоєнні їх обсягів.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anomaly-card anomaly-optimize">
+          <div class="anomaly-header">
+            <div class="anomaly-num">05</div>
+            <div class="anomaly-title">Невалідні номери: $2,717 втрат щомісяця</div>
+            <div class="anomaly-action">🟡 PLATFORM FIX (ФІКС ПЛАТФОРМИ)</div>
+          </div>
+          <div class="anomaly-body">
+            <div class="anomaly-data">
+              <div class="ad-row"><span>Причина повернення</span><strong>bad_number</strong></div>
+              <div class="ad-row"><span>Повернено лідів</span><strong>113</strong></div>
+              <div class="ad-row ad-loss"><span>Втрачений CPL</span><strong>-$2,717</strong></div>
+              <div class="ad-row"><span>Також: no_answer</span><strong>186 лідів / -$4,575</strong></div>
+              <div class="ad-row"><span>Також: not_homeowner</span><strong>85 лідів / -$1,978</strong></div>
+            </div>
+            <div class="anomaly-insight">
+              <div class="ai-title">Причина — Прогалина в платформі</div>
+              <div class="ai-text">Повернення `bad_number` можна на 100% уникнути, підключивши Twilio Lookup API ($0.005/запит) на етапі форми. Повернення `not_homeowner` свідчать про те, що питання "Чи є ви власником?" стоїть занадто пізно у воронці. `no_answer` — часто наслідок повільної доставки ліда (понад 15 хвилин).</div>
+              <div class="ai-action">
+                <strong>Дії:</strong> (1) Додати Twilio Lookup для валідації номерів на льоту. (2) Перенести питання про власність на Крок 1 форми. (3) Впровадити SLA: лід має бути доставлений покупцю не пізніше ніж через 60 секунд. Імпакт: збереження ~$4.7K/місяць.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Telegram Bot Initiative -->
+      <div class="initiative-card">
+        <div class="init-header">
+          <div class="init-icon">🤖</div>
+          <div>
+            <div class="init-title">Продуктова ініціатива: Telegram-бот для Real-Time Алертів</div>
+            <div class="init-sub">Це не просто аномалія — це система для їх автоматичного виявлення та запобігання</div>
+          </div>
+        </div>
+        <div class="init-body">
+          <div class="init-triggers">
+            <div class="trigger-title">Тригери сповіщень (в Telegram команді Ops)</div>
+            <div class="trigger-item">⚠️ Geo Unsold Rate > 15% протягом 2 год → авто-пауза трафіку + тег медіабайєра</div>
+            <div class="trigger-item">⚠️ Return Rate по джерелу > 14% за останні 100 лідів → сигнал на ручну перевірку</div>
+            <div class="trigger-item">🔴 ROI джерела падає нижче 0% → терміновий сигнал (P0)</div>
+            <div class="trigger-item">📊 Щоденне зведення P&L о 20:00 → прибуток / витрати / fill rate</div>
+          </div>
+          <div class="init-tech">
+            <div class="tech-title">Реалізація</div>
+            <div class="tech-text">Google Apps Script (безкоштовно) → зчитує дані з таблиці → відправляє через Telegram Bot API. Запуск MVP за 1 день без залучення бекенд-розробників. Це показує різницю між командою, яка реагує на збитки, і командою, яка їм запобігає.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary table -->
+      <div class="card dark-card" style="margin-top: 40px;">
+        <h3 class="card-title">Зведена таблиця імпакту</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Аномалія</th>
+              <th>Тип</th>
+              <th>Дія</th>
+              <th>Очікуваний імпакт (на місяць)</th>
+              <th>Пріоритет</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01</td>
+              <td>Структурний збиток Google Ads</td>
+              <td>Трафік</td>
+              <td>Пауза g_01/02/03</td>
+              <td class="impact-pos">+$8,000</td>
+              <td><span class="priority p1">P0 — Негайно</span></td>
+            </tr>
+            <tr>
+              <td>02</td>
+              <td>Недоінвестований Native-трафік</td>
+              <td>Трафік</td>
+              <td>Масштабування +50%</td>
+              <td class="impact-pos">+$4,500</td>
+              <td><span class="priority p1">P1 — Цього тижня</span></td>
+            </tr>
+            <tr>
+              <td>03</td>
+              <td>Мертві гео-зони (MT/ID/ND/WY)</td>
+              <td>Платформа</td>
+              <td>Додати у geo exclusions</td>
+              <td class="impact-pos">+$1,600</td>
+              <td><span class="priority p1">P0 — Негайно</span></td>
+            </tr>
+            <tr>
+              <td>04</td>
+              <td>Недоотриманий об'єм від BuyerC</td>
+              <td>Монетизація</td>
+              <td>Збільшення лімітів + пріоритет роутингу</td>
+              <td class="impact-pos">+$3,000</td>
+              <td><span class="priority p2">P1 — Цього тижня</span></td>
+            </tr>
+            <tr>
+              <td>05</td>
+              <td>Невалідні номери та не-власники</td>
+              <td>Платформа</td>
+              <td>Twilio Lookup + зміна воронки</td>
+              <td class="impact-pos">+$4,700</td>
+              <td><span class="priority p2">P2 — Наступний спрінт</span></td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="4"><strong>Загальний потенціал збереження маржі</strong></td>
+              <td class="impact-pos"><strong>+$21,800 / міс</strong></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-text">Unicorn Pro — Тестове завдання PM · Аналіз даних за червень 2026</div>
+      <div class="footer-note">Побудовано на реальних даних з вивантаження лідів Unicorn Pro · Всі метрики розраховані з сирого CSV</div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

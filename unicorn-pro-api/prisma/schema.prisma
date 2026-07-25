@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Buyer {
+  id        Int            @id @default(autoincrement())
+  name      String
+  balance   Float          @default(0)
+  createdAt DateTime       @default(now())
+  campaigns Campaign[]
+  purchases LeadPurchase[]
+}
+
+model Campaign {
+  id         Int      @id @default(autoincrement())
+  buyerId    Int
+  buyer      Buyer    @relation(fields: [buyerId], references: [id])
+  name       String
+  vertical   String   // e.g. HVAC
+  zipCodes   String   // comma separated
+  leadType   String   // "Exclusive", "Shared", "Both"
+  maxBid     Float
+  isActive   Boolean  @default(true)
+  dailyLimit Int      @default(10)
+  createdAt  DateTime @default(now())
+}
+
+model Lead {
+  id           Int            @id @default(autoincrement())
+  serviceType  String
+  zipCode      String
+  propertyType String
+  isOwner      Boolean
+  urgency      String
+  name         String
+  phone        String
+  email        String
+  tcpa         Boolean
+  status       String         // "Exclusive", "Shared", "Unsold"
+  createdAt    DateTime       @default(now())
+  purchases    LeadPurchase[]
+}
+
+model LeadPurchase {
+  id        Int      @id @default(autoincrement())
+  leadId    Int
+  buyerId   Int
+  price     Float
+  status    String   @default("active") // "active", "returned"
+  lead      Lead     @relation(fields: [leadId], references: [id])
+  buyer     Buyer    @relation(fields: [buyerId], references: [id])
+  createdAt DateTime @default(now())
+}

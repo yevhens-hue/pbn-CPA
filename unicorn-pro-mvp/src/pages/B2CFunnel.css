@@ -1,0 +1,254 @@
+.hero-section {
+  text-align: center;
+  padding: 60px 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.social-proof {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.hero-title {
+  font-size: 48px;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero-sub {
+  font-size: 20px;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.search-box {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 24px;
+}
+
+.search-box input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 20px;
+  color: white;
+  font-size: 16px;
+}
+
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  color: var(--text-muted);
+}
+
+.trust-badges span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Funnel */
+.funnel-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.progress-bar {
+  background: rgba(255,255,255,0.1);
+  height: 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.progress-labels .done { color: var(--secondary); }
+.progress-labels .active { color: var(--primary); }
+
+.funnel-card {
+  min-height: 400px;
+}
+
+.funnel-card h2 {
+  font-size: 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+/* Tiles */
+.tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.tile-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  padding: 32px 16px;
+  border-radius: 12px;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s;
+}
+
+.tile-btn:hover {
+  background: rgba(99,102,241,0.1);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Inputs */
+.input-lg {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 8px;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+/* Form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 8px;
+  color: white;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--secondary);
+  margin-top: -10px;
+  margin-left: 8px;
+}
+
+.tcpa-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.mt-4 { margin-top: 24px; }
+.w-full { width: 100%; }
+
+/* Tiles List (Vertical) */
+.tiles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tile-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: var(--text-main);
+  text-align: left;
+}
+
+.tile-row:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.tile-row .emoji {
+  font-size: 24px;
+}
+
+.tile-row .tile-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.tile-text span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Thank you */
+.thank-you-section {
+  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 60px 40px;
+}
+
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.urgency-badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  display: inline-block;
+  margin: 20px 0;
+  font-size: 14px;
+}
