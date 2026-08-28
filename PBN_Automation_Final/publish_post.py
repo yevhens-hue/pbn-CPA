@@ -7,6 +7,7 @@ import warnings
 import datetime
 import random
 import time
+from typing import Optional, Tuple, Dict, Any
 from dotenv import load_dotenv
 
 # Google Sheets & SEO Imports
@@ -60,8 +61,18 @@ except:
 # Load environment variables
 load_dotenv()
 
+# Gemini AI Client
+try:
+    import google.generativeai as genai
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if gemini_key:
+        genai.configure(api_key=gemini_key)
+except ImportError:
+    genai = None
+
 # --- CONFIGURATION ---
-SHEET_ID = "1CJjN_mSwrGwp2tVuaLK0vENb2c5VnYPQw0JM43HTE-c" # ID вашей таблицы
+from core.config import get_sheet_id
+SHEET_ID = get_sheet_id() or "1CJjN_mSwrGwp2tVuaLK0vENb2c5VnYPQw0JM43HTE-c" # ID вашей таблицы
 SHEET_TAB_NAME = "Report" # Имя вкладки для отчетов
 
 # Unified 11-column structure mapping
@@ -470,9 +481,12 @@ def log_to_google_sheet(site_url, topic, status, link, model_used):
             return
 
         # Parse JSON credentials
-        creds_dict = json.loads(json_creds)
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        if os.path.exists(json_creds):
+            creds = ServiceAccountCredentials.from_json_keyfile_name(json_creds, scope)
+        else:
+            creds_dict = json.loads(json_creds)
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
         # Open Sheet
@@ -1102,12 +1116,16 @@ def inject_ecosystem_links(content, topic):
     """
     Injects AstroCrashGame banner and Games Income contextual links into the content.
     """
-    # 1. AstroCrashGame Banner
-    astro_html = """
-    <div class="astro-crash-banner" style="background: linear-gradient(135deg, #1e1b4b, #4338ca); border-radius: 16px; padding: 30px; margin: 40px 0; text-align: center; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.3); border: 2px solid #818cf8; overflow: hidden; position: relative;">
-        <h3 style="color: #ffffff; margin-top: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">🚀 Play AstroCrashGame</h3>
-        <p style="color: #e2e8f0; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; font-weight: 500;">Tired of losing? Experience the next generation of crash games. Fair algorithms, massive multipliers, and instant payouts right in Telegram.</p>
-        <a href="https://t.me/AstroCrashGame_bot" target="_blank" rel="noopener sponsored" style="display: inline-block; background: #fbbf24; color: #1e1b4b; padding: 14px 35px; font-size: 1.1rem; font-weight: bold; text-decoration: none; border-radius: 50px; text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);">Launch Game directly in Telegram</a>
+    # 1. AstroCrashGame Banner — only inject for crash/aviator topics, irrelevant for casino/bonus/slot articles
+    is_crash_topic = any(kw in topic.lower() for kw in ['aviator', 'crash', 'crash game', 'plane'])
+    astro_html = ""
+    if is_crash_topic:
+        astro_html = """
+    <div class="astro-crash-banner" style="background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid #e11d48; border-radius: 20px; padding: 35px 25px; margin: 40px 0; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(225, 29, 72, 0.05); border-radius: 50%; blur: 40px;"></div>
+        <h3 style="color: #f1f5f9; margin-top: 0; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">🚀 Play AstroCrashGame</h3>
+        <p style="color: #94a3b8; font-size: 1.1rem; margin-bottom: 30px; line-height: 1.6;">Experience the next-gen crash game. Provably fair algorithms and instant payouts in Telegram.</p>
+        <a href="https://t.me/AstroCrashGame_bot" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(to right, #e11d48, #be123c); color: #ffffff; padding: 16px 40px; font-size: 1.1rem; font-weight: 800; text-decoration: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(225, 29, 72, 0.3); text-transform: uppercase;">Launch in Telegram</a>
     </div>
     """
 
@@ -1119,20 +1137,22 @@ def inject_ecosystem_links(content, topic):
     </div>
     """
     
-    # Inject astro_html after the first 3 paragraphs (or in the middle)
-    paragraphs = content.split('</p>')
-    if len(paragraphs) > 4:
-        paragraphs[3] = paragraphs[3] + '</p>\n' + astro_html
-        content = '</p>'.join(paragraphs)
-    else:
-        content = astro_html + content
+    # Inject astro_html after the first 3 paragraphs ONLY when relevant
+    if is_crash_topic and astro_html:
+        paragraphs = content.split('</p>')
+        if len(paragraphs) > 4:
+            paragraphs[3] = paragraphs[3] + '</p>\n' + astro_html
+            content = '</p>'.join(paragraphs)
+        else:
+            content = astro_html + content
 
     # Inject games_income_html before conclusion or at the end
     if '<h2>Conclusion</h2>' in content:
         content = content.replace('<h2>Conclusion</h2>', games_income_html + '\n<h2>Conclusion</h2>')
     else:
         content += '\n' + games_income_html
-        
+    
+    return content
     return content
 
 def find_wp_post_id(site_url, username, app_password, title):
@@ -1215,19 +1235,84 @@ def generate_pseo_article(topic, target_link, anchor_text, lang='en', author=Non
     Language: {lang}
     
     CRITICAL REQUIREMENTS:
-    1. **Local Context**: Mention {city} naturally throughout the article. Discuss local trends, popular payment methods in {city} (like UPI/Paytm), and the local gaming community.
-    2. **Expert Authority**: Use first-person experience. Mention "When I was in {city} testing these strategies..." or "Players in {city} have reported...".
-    3. **Conversion**: Integrate the promo code `1x_4393603` and recommend 1xBet as the best platform for users in {city}.
-    4. **Structure**: Use H1, H2, H3. Include a dynamic data table of local win rates.
-    5. **TOC & Schema**: Return valid HTML. Do NOT include Table of Contents or Author block, as they will be injected automatically later.
+    1. **Local Context**: Mention {city} as a major gaming hub in India. Discuss local trends, popular payment methods in {city} (like UPI/Paytm), and the growing gaming community in this specific region.
+    2. **Expert Authority**: Use first-person experience. Mention "During my last visit to {city} testing these strategies..." or "Players from the {city} community have reported...".
+    3. **Conversion**: Recommend 1xBet as the #1 platform for users in {city}. Explicitly mention the promo code `1x_4393603` for an exclusive local bonus.
+    4. **Unique Structure**: Use H1, H2, H3. Include a dynamic HTML data table showing 'Average Win Multipliers' reported by users in {city}.
+    5. **E-E-A-T**: Make it sound like local field research. Discuss specific local vibes or cultural references if relevant to {city}.
     
-    Return ONLY clean HTML. 
+    Return ONLY clean, valid HTML code. No markdown, no TOC, no author block.
     """
-    
-    # We use the existing gemini/groq infrastructure via generate_article logic
-    # but with this PSEO-specific prompt.
-    # To keep it simple, we'll let generate_article handle the API calls.
     return prompt
+
+def generate_with_gemini(
+    prompt: str,
+    topic: str,
+    author: Optional[Dict[str, Any]],
+    use_ai_images: bool = False
+) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """
+    High-performance generation using Gemini 3 Flash Preview.
+    Fast, reliable, and excellent for long-form content.
+    """
+    if not genai:
+        print("   ⚠️ google.generativeai not installed. Run: pip install google-generativeai")
+        return None, None, None
+
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        print("   ⚠️ GEMINI_API_KEY not set in environment")
+        return None, None, None
+
+    print("   💎 Generating high-speed content with Gemini 3 Flash Preview...")
+    try:
+        model = genai.GenerativeModel("gemini-3-flash-preview")
+        response = model.generate_content(prompt)
+        content = response.text
+        content = content.replace('```html', '').replace('```', '').strip()
+
+        # Image Injection
+        picked = []
+        if use_ai_images:
+            ai_img = generate_ai_image(topic)
+            if ai_img: picked.append(ai_img)
+        
+        if len(picked) < 2:
+            available = list(set(GAMBLING_IMAGES))
+            picked.extend(random.sample(available, min(2 - len(picked), len(available))))
+
+        parts = content.split('</p>')
+        if len(parts) > 2:
+            parts[1] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[0]}" alt="{topic}" style="width:100%;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);" loading="lazy"></div>'
+        if len(parts) > 5 and len(picked) > 1:
+            parts[min(5, len(parts)-2)] += f'<div class="post-image" style="margin:20px 0;"><img src="{picked[1]}" alt="{topic} expert tips" style="width:100%;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);" loading="lazy"></div>'
+        content = '</p>'.join(parts)
+
+        # SEO & Widget Injection
+        # Only inject Aviator stats table for crash/aviator topics (irrelevant for casino/bonus topics)
+        is_crash = any(kw in topic.lower() for kw in ['aviator', 'crash', 'plane'])
+        if is_crash:
+            content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+        
+        # Limit WhatsApp CTA to 1 per article (was 3 — caused repeated blocks on the page)
+        if is_crash:
+            content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 1)
+        
+        if is_crash and '<h2>Conclusion</h2>' in content:
+            content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
+        elif is_crash:
+            content += generate_odds_widget_html() + generate_calculator_html()
+
+        # Schema & Author
+        schema_html = generate_game_schema() if is_crash else ""
+        content += f"\n\n{schema_html}"
+        content += generate_author_html(author)
+        
+        return topic, content, "gemini-3-flash-preview"
+
+    except Exception as e:
+        print(f"   ❌ Gemini request failed: {e}")
+        return None, None, None
 
 def generate_article(topic, target_link, anchor_text, author_style='neutral', lang='en', use_ai_images=False, use_pseo=False):
     """
@@ -1304,13 +1389,12 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
             2. **E-E-A-T & Personal Experience**: Google rewards content with first-hand experience. Throughout the article, 
                use phrases like "I tested this...", "In my session with 5,000 INR...", "After 200 rounds, I observed...". 
                Include specific data points, betting logs, real-life scenarios, and screenshots descriptions to prove this isn't just generic AI text.
-               Discuss specific outcomes: "The multiplier hit 10x three times in a row," or "I lost small but recovered on the 4th round."
-            3. **Insider Insights: Algorithm Analysis**: Include a massive section titled "Insider Secrets: Algorithm Analysis".
-               - Discuss "RNG patterns", seed generation, and hidden cycles.
-               - Mention specific "Signals" (e.g., "The Double-Pink Strategy", "Blue Streak Recovery").
+               Discuss specific outcomes matching the topic.
+            3. **Insider Insights & Analysis**: Include a massive section titled "Insider Secrets: Algorithm Analysis" (for games) or "Pro Expert Tips" (for bonuses/casinos).
+               - Discuss patterns, hidden mechanics, and logic behind {topic}.
                - Use local Indian gambling terminology (e.g., "khowa", "patti", "chal", "mota") to build trust.
-               - Make it sound exclusive, expert-level, and backed by "community data from Telegram".
-            4. Use an engaging <h1> tag.
+               - Make it sound exclusive, expert-level, and backed by "community data".
+            4. Use an engaging <h1> tag. **IMPORTANT**: DO NOT use ALL CAPS for headers. Use Title Case.
             5. Use at least 15-20 <h2> subheadings and 10-15 <h3> subheadings.
             6. Include a "FAQ" section at the end with 10+ questions and answers.
             7. **SEO Schema - CRITICAL**: After the FAQ section, add a valid JSON-LD FAQ Schema block:
@@ -1327,21 +1411,13 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
                        "@type": "Answer",
                        "text": "[Answer 1]"
                      }}
-                   }},
-                   {{
-                     "@type": "Question",
-                     "name": "[FAQ Question 2 about {topic}]",
-                     "acceptedAnswer": {{
-                       "@type": "Answer",
-                       "text": "[Answer 2]"
-                     }}
                    }}
                  ]
                }}
                </script>
                ```
                Fill in at least 5 real FAQ questions and answers from the article.
-            7. **Affiliate Integration**:
+            8. **Affiliate Integration**:
                - Use the localized link `/go/1xbet` for all text links with anchor "{anchor_text}".
                - **PROMO CODE**: Explicitly mention the promo code `1x_4393603` throughout the article.
                - **BENEFITS**: Stress that this promo code gives an increased registration bonus, has unlimited validity, and can be shared with friends.
@@ -1418,14 +1494,18 @@ def generate_article(topic, target_link, anchor_text, author_style='neutral', la
     if res and res[1]:
         return res
         
-    # --- FALLBACK 1: OPENROUTER (DISABLED DUE TO HANGS) ---
-    # print("⚠️ Claude failed or rate limited (429). Falling back to OpenRouter (Llama 3.3 70B)...")
-    # res = generate_with_openrouter(prompt, topic, author, use_ai_images=use_ai_images)
-    # if res and res[1]:
-    #     return res
+    # --- FALLBACK 1: GEMINI 2.0 FLASH (NEW SPEED KING) ---
+    res = generate_with_gemini(prompt, topic, author, use_ai_images=use_ai_images)
+    if res and res[1]:
+        return res
 
-    # --- FALLBACK 2: GROQ (LAST RESORT) ---
-    print("⚠️ OpenRouter disabled/failed. Switching to Groq API (Llama 3.1 8B) for stability...")
+    # --- FALLBACK 2: OPENROUTER (LLAMA 3.3 70B) ---
+    res = generate_with_openrouter(prompt, topic, author, use_ai_images=use_ai_images)
+    if res and res[1]:
+        return res
+
+    # --- FALLBACK 3: GROQ (LAST RESORT) ---
+    print("⚠️ All high-tier models failed. Switching to Groq API (Llama 3.1 8B) for stability...")
     return generate_with_groq(prompt, topic, author, use_ai_images=use_ai_images)
 
 
@@ -1485,10 +1565,11 @@ def generate_with_openrouter(prompt, topic, author, use_ai_images=False):
                 print(f"⚠️ Image injection failed: {e}")
 
             # SEO Injection
-            content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+            if any(kw in topic.lower() for kw in ['aviator', 'crash game', 'crash']):
+                content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
             parts = content.split('</p>')
             if len(parts) > 3:
-                 content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
+                 content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 1)
             
             if '<h2>Conclusion</h2>' in content:
                 content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
@@ -1570,8 +1651,9 @@ def generate_with_claude(prompt, topic, author, use_ai_images=False):
         content = '</p>'.join(parts)
 
         # SEO & Widget Injection
-        content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
-        content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
+        if any(kw in topic.lower() for kw in ['aviator', 'crash game', 'crash']):
+            content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+        content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 1)
         
         if '<h2>Conclusion</h2>' in content:
             content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)
@@ -1651,10 +1733,11 @@ def generate_with_groq(prompt, topic, author, use_ai_images=False):
                 print(f"⚠️ Image injection failed: {e}")
 
             # SEO Injection (Groq path)
-            content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
+            if any(kw in topic.lower() for kw in ['aviator', 'crash game', 'crash']):
+                content = content.replace('</h1>', f'</h1>{generate_dynamic_aviator_table()}', 1)
             parts = content.split('</p>')
             if len(parts) > 3:
-                 content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 3)
+                 content = content.replace('</p>', f'</p>{generate_whatsapp_cta(topic)}', 1)
             
             if '<h2>Conclusion</h2>' in content:
                 content = content.replace('<h2>Conclusion</h2>', f'{generate_odds_widget_html()}{generate_calculator_html()}<h2>Conclusion</h2>', 1)

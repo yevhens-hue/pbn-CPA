@@ -1,0 +1,154 @@
+{
+    "cities": [
+        {
+            "name": "Mumbai",
+            "state": "Maharashtra",
+            "tier": 1
+        },
+        {
+            "name": "Delhi",
+            "state": "Delhi",
+            "tier": 1
+        },
+        {
+            "name": "Bangalore",
+            "state": "Karnataka",
+            "tier": 1
+        },
+        {
+            "name": "Hyderabad",
+            "state": "Telangana",
+            "tier": 1
+        },
+        {
+            "name": "Ahmedabad",
+            "state": "Gujarat",
+            "tier": 1
+        },
+        {
+            "name": "Chennai",
+            "state": "Tamil Nadu",
+            "tier": 1
+        },
+        {
+            "name": "Kolkata",
+            "state": "West Bengal",
+            "tier": 1
+        },
+        {
+            "name": "Pune",
+            "state": "Maharashtra",
+            "tier": 1
+        },
+        {
+            "name": "Jaipur",
+            "state": "Rajasthan",
+            "tier": 2
+        },
+        {
+            "name": "Lucknow",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Kanpur",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Nagpur",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Indore",
+            "state": "Madhya Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Thane",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Bhopal",
+            "state": "Madhya Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Visakhapatnam",
+            "state": "Andhra Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Pimpri-Chinchwad",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Patna",
+            "state": "Bihar",
+            "tier": 2
+        },
+        {
+            "name": "Vadodara",
+            "state": "Gujarat",
+            "tier": 2
+        },
+        {
+            "name": "Ghaziabad",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Ludhiana",
+            "state": "Punjab",
+            "tier": 2
+        },
+        {
+            "name": "Agra",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Nashik",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Faridabad",
+            "state": "Haryana",
+            "tier": 2
+        },
+        {
+            "name": "Meerut",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Rajkot",
+            "state": "Gujarat",
+            "tier": 2
+        },
+        {
+            "name": "Kalyan-Dombivli",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Vasai-Virar",
+            "state": "Maharashtra",
+            "tier": 2
+        },
+        {
+            "name": "Varanasi",
+            "state": "Uttar Pradesh",
+            "tier": 2
+        },
+        {
+            "name": "Srinagar",
+            "state": "Jammu and Kashmir",
+            "tier": 2
+        }
+    ]
+}

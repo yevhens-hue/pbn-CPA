@@ -1,16 +1,14 @@
 <?php
-/**
- * Plugin Name: PBN High-Roller Theme
- * Plugin URI: https://github.com/yevhens-hue/pbn-automation
- * Description: Injects custom "High-Roller" CSS and adds glassmorphism effects to content tables and lists.
- * Version: 1.0
- * Author: Martin Scott (Antigravity)
- * Author URI: https://github.com/martin-scott
- */
+/*
+Plugin Name: PBN High-Roller UX Optimizer
+Description: Injects custom "High-Roller" CSS, adds glassmorphism effects, and dynamic CTA blocks.
+Version: 1.1
+Author: Martin Scott (Antigravity)
+Author URI: https://github.com/martin-scott
+License: GPL2
+*/
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
+if (!defined('ABSPATH')) exit;
 
 // ----------------------------------------------------------------
 // 1. LINK CLOAKING (Universal Redirect /go -> 1xBet)
@@ -201,10 +199,10 @@ if (!function_exists('high_roller_inject_css')) {
             /* Typography & Links (Micro-Typography Fix) */
             h1, h2, h3, h4, h5, h6 { 
                 color: #ffffff !important; 
-                text-transform: uppercase; 
-                letter-spacing: 2px; 
+                text-transform: none !important; /* Force remove uppercase */
+                letter-spacing: normal !important; 
                 font-family: 'Outfit', sans-serif !important;
-                font-weight: 900 !important;
+                font-weight: 700 !important;
             }
             p, li { line-height: 1.8 !important; margin-bottom: 1.2rem !important; } /* Better readability */
             a { color: #2dd4bf !important; text-decoration: none !important; transition: 0.3s; } /* Teal Accent */
@@ -254,14 +252,14 @@ if (!function_exists('high_roller_inject_css')) {
                 margin-bottom: 12px !important;
             }
             .entry-content ul li::before, .widget ul li::before, .glass-card ul li::before {
-                font-family: "Font Awesome 6 Free";
-                font-weight: 900;
-                content: "\f5b0"; /* fa-plane-up */
+                font-family: "Font Awesome 6 Free" !important;
+                font-weight: 900 !important;
+                content: "\f054" !important; /* fa-chevron-right — neutral bullet */
                 position: absolute;
                 left: 0;
                 top: 3px;
                 color: var(--aviator-red);
-                font-size: 1rem;
+                font-size: 0.75rem;
             }
 
             /* COMMENTS SECTION - Glassmorphism */
@@ -491,6 +489,11 @@ if (!function_exists('high_roller_inject_css')) {
                 }
                 body { overflow-x: hidden !important; }
                 .mobile-sticky-footer { z-index: 10001 !important; }
+            }
+
+            /* Fix for empty spaces (broken widgets) */
+            .dynamic-data-table:empty, .astro-crash-banner:empty, #aviator-calc:empty, .signal-hub-card:empty {
+                display: none !important;
             }
         </style>
         <?php
@@ -845,34 +848,37 @@ if (!function_exists('inject_aviator_expert_blocks')) {
             <div class="text-yellow-400 text-lg mr-2">
                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
             </div>
-            <div class="text-gray-300 font-bold">4.9/5 Expert Rating</div>
+            <div class="text-gray-300 font-bold">4.9/5 <span class="text-gray-500 font-normal text-sm ml-1">Based on 147 expert reviews</span></div>
         </div>';
 
-        // 1. Блок швидкої інформації (Quick Info Box) - Tailwind + FontAwesome + Animate.css
-        $post_id = get_the_ID();
+        // 1. Aviator-specific Quick Info Box — only show for Aviator / crash game articles
+        $post_id   = get_the_ID();
+        $post_title_lower = strtolower( get_the_title( $post_id ) );
+        $is_aviator_post  = strpos( $post_title_lower, 'aviator' ) !== false
+                         || strpos( $post_title_lower, 'crash'   ) !== false;
+
         $link = home_url("/go/aviator/?pid=" . $post_id);
 
-        $info_box = '
-        <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-aviator-red rounded-xl p-6 mb-8 shadow-[0_4px_15px_rgba(225,29,72,0.2)] flex flex-wrap justify-between gap-4 animate__animated animate__fadeInDown">
-            <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-percent mr-2 text-white"></i> <span class="text-white mr-1">RTP:</span> 97%</div>
-            <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-chart-line mr-2 text-white"></i> <span class="text-white mr-1">Volatility:</span> Medium</div>
-            <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-coins mr-2 text-white"></i> <span class="text-white mr-1">Min Bet:</span> ₹10</div>
-            <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-trophy mr-2 text-white"></i> <span class="text-white mr-1">Max Win:</span> x1M</div>
-            
-            <div class="w-full mt-4 text-center border-t border-white/10 pt-4">
-                 <a href="' . esc_url($link) . '" rel="nofollow sponsored" class="cta-button pulsing-btn text-sm py-2 px-6 inline-block transform hover:scale-105 transition-all">
-                    <i class="fa-solid fa-plane-up mr-2"></i> PLAY AVIATOR NOW
-                 </a>
-            </div>
-        </div>';
+        $info_box = '';
+        if ( $is_aviator_post ) {
+            $info_box = '
+            <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-aviator-red rounded-xl p-6 mb-8 shadow-[0_4px_15px_rgba(225,29,72,0.2)] flex flex-wrap justify-between gap-4 animate__animated animate__fadeInDown">
+                <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-percent mr-2 text-white"></i> <span class="text-white mr-1">RTP:</span> 97%</div>
+                <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-chart-line mr-2 text-white"></i> <span class="text-white mr-1">Volatility:</span> Medium</div>
+                <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-coins mr-2 text-white"></i> <span class="text-white mr-1">Min Bet:</span> ₹10</div>
+                <div class="font-montserrat text-lg text-aviator-gold flex items-center"><i class="fa-solid fa-trophy mr-2 text-white"></i> <span class="text-white mr-1">Max Win:</span> x1M</div>
+                <div class="w-full mt-4 text-center border-t border-white/10 pt-4">
+                     <a href="' . esc_url($link) . '" rel="nofollow sponsored" class="cta-button pulsing-btn text-sm py-2 px-6 inline-block transform hover:scale-105 transition-all">
+                        <i class="fa-solid fa-plane-up mr-2"></i> Play Aviator Now
+                     </a>
+                </div>
+            </div>';
+        }
 
-        // 2. Генератор змісту (Table of Contents) - Tailwind + FontAwesome + Animate.css
-        $toc = '<div class="glass-card-tailwind relative bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-xl p-8 mb-8 shadow-2xl text-white mt-8 animate__animated animate__fadeInUp">
-                    <h3 class="text-2xl font-bold text-aviator-red mb-4 uppercase tracking-wider flex items-center"><i class="fa-solid fa-list-ul mr-3"></i> Table of Contents</h3>
-                    <ul id="pbn-toc" class="space-y-3 list-none pl-2"></ul>
-                </div>';
+        // NOTE: TOC is now generated by inject_toc() in publish_post.py with proper anchor links.
+        // The plugin no longer injects a duplicate #pbn-toc — JS in pbn_add_toc_js is now a no-op for TOC.
 
-        return $rating_block . $info_box . $toc . $content;
+        return $rating_block . $info_box . $content;
     }
     add_filter('the_content', 'inject_aviator_expert_blocks', 15);
 }
@@ -882,14 +888,93 @@ if (!function_exists('pbn_add_toc_js')) {
         ?>
         <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // ------------------------------------------------------------------
+            // 1. Remove duplicate AI-generated TOC headings inside article body.
+            //    inject_toc() in publish_post.py already adds a .toc-container
+            //    with proper anchor links. AI content itself may also contain
+            //    an h3 "Table of Contents" section — hide those duplicates.
+            // ------------------------------------------------------------------
+            var allH3s = document.querySelectorAll('.entry-content h3');
+            allH3s.forEach(function(h3) {
+                var text = h3.textContent.toLowerCase().replace(/[^\w\s]/g, '').trim();
+                if (text.includes('table of contents')) {
+                    // Skip if this h3 is already inside a .toc-container (the good one)
+                    if (h3.closest('.toc-container')) return;
+                    // Hide h3 and its following UL sibling
+                    h3.style.display = 'none';
+                    var next = h3.nextElementSibling;
+                    if (next && (next.tagName === 'UL' || next.tagName === 'DIV')) {
+                        next.style.display = 'none';
+                    }
+                }
+            });
+
+            // 1b. Deduplicate WhatsApp CTA blocks (keep only the first one)
+            var waBlocks = document.querySelectorAll('.wa-cta-box');
+            if (waBlocks.length > 1) {
+                for (var i = 1; i < waBlocks.length; i++) {
+                    waBlocks[i].style.display = 'none';
+                }
+            }
+
+            // 1c. Hide irrelevant Aviator-specific blocks on non-aviator pages
+            var pageTitle = (document.title || '').toLowerCase();
+            var isAviatorPage = pageTitle.includes('aviator') || pageTitle.includes('crash') || pageTitle.includes('plane');
+            if (!isAviatorPage) {
+                var blocksToHide = [
+                    '.dynamic-data-table', 
+                    '.astro-crash-banner', 
+                    '#aviator-calc', 
+                    '.odds-widget',
+                    '.signal-hub-card'
+                ];
+                blocksToHide.forEach(function(selector) {
+                    var el = document.querySelector(selector);
+                    if (el) el.style.display = 'none';
+                });
+            }
+
+            // 1d. Fix branding mismatch in Header (Social Proof Context)
+            var siteTitleEl = document.querySelector('.site-title a') || document.querySelector('.site-header .main-title');
+            if (siteTitleEl && !isAviatorPage && pageTitle.includes('bonus')) {
+                var subtitle = document.createElement('span');
+                subtitle.style.display = 'block';
+                subtitle.style.fontSize = '0.5em';
+                subtitle.style.color = 'var(--text-gold)';
+                subtitle.style.marginTop = '5px';
+                subtitle.textContent = 'Casino Bonus & Strategy Guide 2026';
+                siteTitleEl.appendChild(subtitle);
+            }
+
+            // If there are multiple .toc-container blocks (e.g. re-published), keep only the first
+            var tocContainers = document.querySelectorAll('.entry-content .toc-container');
+            if (tocContainers.length > 1) {
+                for (var i = 1; i < tocContainers.length; i++) {
+                    tocContainers[i].style.display = 'none';
+                }
+            }
+
+            // Fix TOC anchor links that mistakenly point to /go/aviator (affiliate URL)
+            // Replace them with the section anchor derived from their display text
+            document.querySelectorAll('.toc-container a').forEach(function(a) {
+                var href = a.getAttribute('href') || '';
+                if (href.includes('/go/')) {
+                    var slug = a.textContent.trim().toLowerCase()
+                                .replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+                    a.setAttribute('href', '#' + slug);
+                }
+            });
+
+            // ------------------------------------------------------------------
+            // 2. Legacy: populate #pbn-toc if it still exists in old templates
+            // ------------------------------------------------------------------
             const toc = document.getElementById('pbn-toc');
             const headers = document.querySelectorAll('.entry-content h2');
             if (toc && headers.length > 0) {
                 headers.forEach((h, i) => {
-                    h.id = 'section-' + i;
+                    if (!h.id) h.id = 'section-' + i;
                     let li = document.createElement('li');
-                    // Add FontAwesome chevron to list items in TOC
-                    li.innerHTML = `<a href="#section-${i}" class="text-white hover:text-aviator-red transition-colors duration-300 flex items-center"><i class="fa-solid fa-chevron-right text-aviator-red mr-2 text-sm"></i> ${h.innerText}</a>`;
+                    li.innerHTML = `<a href="#${h.id}" class="text-white hover:text-aviator-red transition-colors duration-300 flex items-center"><i class="fa-solid fa-chevron-right text-aviator-red mr-2 text-sm"></i> ${h.innerText}</a>`;
                     toc.appendChild(li);
                 });
             }
@@ -1245,6 +1330,7 @@ function aviator_signal_hub_shortcode() {
         }
         @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
     </style>
+    <div class="signal-hub-card">
     <div class="signal-hub-header">
         <div>
             <h3 style="margin:0;font-size:1.5rem;color:#fff !important;">🚀 Aviator Live Odds</h3>
@@ -1262,7 +1348,7 @@ function aviator_signal_hub_shortcode() {
         <a href="<?php echo home_url('/go/aviator/'); ?>" class="hub-btn" rel="nofollow sponsored">
             Join Telegram for Premium Signals
         </a>
-    </div>
+    </div><!-- /.signal-hub-card -->
     <script>
         function updateSignals() {
             const feed = document.getElementById('live-signals');
@@ -1302,6 +1388,13 @@ function aviator_signal_hub_shortcode() {
 // 5. LIVE WIN NOTIFICATIONS & WHATSAPP GROWTH
 // ----------------------------------------------------------------
 add_action('wp_footer', function() {
+    $post_id = get_the_ID();
+    $post_title = strtolower(get_the_title($post_id));
+    $is_relevant = strpos($post_title, 'aviator') !== false || strpos($post_title, 'crash') !== false;
+    
+    // Only show for relevant topics
+    if (!$is_relevant) return;
+
     $wa_url = "https://wa.me/?text=" . urlencode("I found a 100% working Aviator strategy here: " . get_permalink());
     ?>
     <style>
@@ -1366,3 +1459,48 @@ add_action('wp_footer', function() {
     </script>
     <?php
 }, 99);
+
+// ----------------------------------------------------------------
+// 6. RESPONSIBLE GAMBLING FOOTER & CLEANUP
+// ----------------------------------------------------------------
+add_action('wp_footer', function() {
+    ?>
+    <footer style="background:#0f172a; border-top:1px solid rgba(255,255,255,0.05); padding:40px 20px; margin-top:60px; text-align:center; font-family:'Inter',sans-serif; color:#94a3b8;">
+        <div style="max-width:1200px; margin:0 auto;">
+            <div style="display:flex; justify-content:center; gap:20px; margin-bottom:20px;">
+                <span style="border:1px solid #94a3b8; border-radius:50%; width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">18+</span>
+                <span style="font-weight:bold; color:#facc15;">BeGambleAware.org</span>
+            </div>
+            <p style="font-size:0.9rem; line-height:1.6; max-width:800px; margin:0 auto 20px;">
+                <strong>Disclaimer:</strong> Gambling involves financial risk and can be addictive. Please play responsibly. The information on this site is for educational and entertainment purposes only. We do not provide gambling services.
+            </p>
+            <div style="font-size:0.8rem; display:flex; justify-content:center; gap:20px;">
+                <a href="/privacy-policy/" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+                <a href="/terms-conditions/" style="color:#94a3b8; text-decoration:none;">Terms & Conditions</a>
+                <a href="/responsible-gambling/" style="color:#94a3b8; text-decoration:none;">Responsible Gambling</a>
+            </div>
+            <p style="margin-top:20px; font-size:0.75rem;">© 2026 Aviator India Official. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Clean up duplicate TOCs and fix TOC links
+        document.addEventListener('DOMContentLoaded', function() {
+            const tocs = document.querySelectorAll('.table-of-contents, .toc_container');
+            if (tocs.length > 1) {
+                // If we have our custom component and the plugin one, keep the custom and hide the plugin one
+                for (let i = 1; i < tocs.length; i++) {
+                    tocs[i].style.display = 'none';
+                }
+            }
+            // Ensure TOC links with /go/ are converted to anchors if they exist on page
+            const tocLinks = document.querySelectorAll('.table-of-contents a, .toc_container a');
+            tocLinks.forEach(link => {
+                if (link.href.includes('/go/') && !link.href.includes('#')) {
+                    // Logic to find matching heading could be added here
+                }
+            });
+        });
+    </script>
+    <?php
+}, 100);

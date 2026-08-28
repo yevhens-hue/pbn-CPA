@@ -117,10 +117,10 @@ def generate_whatsapp_cta(topic):
     
     html = f"""
     <!-- WhatsApp Growth CTA -->
-    <div class="wa-cta-box" style="background: rgba(37, 211, 102, 0.1); border-left: 4px solid #25D366; padding: 20px; margin: 30px 0; border-radius: 0 12px 12px 0; backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin-top: 0; color: #25D366; font-family: 'Inter', sans-serif;">🔥 Share these signals with your squad!</h4>
-        <p style="margin-bottom: 15px; font-family: 'Inter', sans-serif; color: #d1d5db;">Success is better when shared. Send these exclusive tricks to your friends on WhatsApp and win together!</p>
-        <a href="{share_url}" target="_blank" rel="nofollow noopener" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); font-family: 'Inter', sans-serif; transition: transform 0.2s;">📲 Share on WhatsApp</a>
+    <div class="wa-cta-box" style="background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid rgba(255,255,255,0.05); padding: 30px; margin: 40px 0; border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+        <h4 style="margin-top: 0; color: #f1f5f9; font-size: 1.4rem; font-weight: 800; text-transform: uppercase;">🔥 Share this with your squad!</h4>
+        <p style="margin-bottom: 25px; color: #94a3b8; font-size: 1rem; line-height: 1.6;">Success is better together. Send these exclusive tricks to your friends on WhatsApp.</p>
+        <a href="{share_url}" target="_blank" rel="nofollow noopener" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: white; padding: 14px 32px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 1.1rem; box-shadow: 0 8px 15px rgba(37, 211, 102, 0.2); transition: all 0.2s ease;">📲 Share on WhatsApp</a>
     </div>
     """
     return html

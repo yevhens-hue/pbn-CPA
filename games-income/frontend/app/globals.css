@@ -27,3 +27,122 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.08);
 }
+
+/* Prose content styles for blog articles */
+.prose-content {
+  color: #d1d5db;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.prose-content h1,
+.prose-content h2,
+.prose-content h3,
+.prose-content h4,
+.prose-content h5,
+.prose-content h6 {
+  color: white;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose-content p {
+  margin-bottom: 1.5rem;
+  color: #9ca3af;
+}
+
+.prose-content a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.prose-content a:hover {
+  color: #93c5fd;
+}
+
+.prose-content ul,
+.prose-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.prose-content li {
+  margin-bottom: 0.5rem;
+  color: #9ca3af;
+}
+
+.prose-content strong {
+  color: white;
+  font-weight: 700;
+}
+
+.prose-content em {
+  color: #d1d5db;
+  font-style: italic;
+}
+
+.prose-content code {
+  background: rgba(255,255,255,0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  color: #93c5fd;
+}
+
+.prose-content pre {
+  background: rgba(0,0,0,0.3);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.prose-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.prose-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.prose-content th,
+.prose-content td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.prose-content th {
+  color: white;
+  font-weight: 700;
+  background: rgba(255,255,255,0.05);
+}
+
+.prose-content td {
+  color: #9ca3af;
+}
+
+.prose-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.prose-content hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 2rem 0;
+}

@@ -1,0 +1,50 @@
+[
+    {
+        "id": "vikram_singh",
+        "name": "Vikram Singh",
+        "role": "Chief iGaming Strategist",
+        "bio": "Vikram is a former data analyst turned professional iGaming strategist. With over 8 years of experience analyzing RNG algorithms and casino house edges, he specializes in high-RTP slots and crash games.",
+        "avatar_url": "https://luckybetvip.com/wp-content/uploads/2024/03/author-vikram.jpg",
+        "social": {
+            "twitter": "https://twitter.com/vikram_igaming",
+            "linkedin": "https://linkedin.com/in/vikram-singh-casino"
+        },
+        "expertise": [
+            "Crash Games",
+            "Aviator",
+            "Slots Analysis"
+        ]
+    },
+    {
+        "id": "priya_deshmukh",
+        "name": "Priya Deshmukh",
+        "role": "Live Casino & Table Games Expert",
+        "bio": "Priya has spent a decade dealing and managing high-stakes tables in Goa before moving to online casino journalism. She provides unparalleled insights into Roulette, Baccarat, and local Indian games like Teen Patti.",
+        "avatar_url": "https://luckybetvip.com/wp-content/uploads/2024/03/author-priya.jpg",
+        "social": {
+            "twitter": "https://twitter.com/priya_livecasino",
+            "linkedin": "https://linkedin.com/in/priya-deshmukh-gaming"
+        },
+        "expertise": [
+            "Live Casino",
+            "Teen Patti",
+            "Roulette Strategies"
+        ]
+    },
+    {
+        "id": "rahul_verma",
+        "name": "Rahul Verma",
+        "role": "Sports Betting Analyst",
+        "bio": "A passionate cricket fan and mathematical modeler, Rahul uses advanced statistical analysis to find value bets in the IPL and T20 leagues. His betting predictions have been featured in multiple sports forums.",
+        "avatar_url": "https://luckybetvip.com/wp-content/uploads/2024/03/author-rahul.jpg",
+        "social": {
+            "twitter": "https://twitter.com/rahul_cricket_odds",
+            "linkedin": "https://linkedin.com/in/rahul-verma-sports"
+        },
+        "expertise": [
+            "Cricket Betting",
+            "IPL Predictions",
+            "Sports Odds"
+        ]
+    }
+]
